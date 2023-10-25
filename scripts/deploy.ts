@@ -1,4 +1,3 @@
-import { ethers } from "hardhat"
 import {
     LockDealNFT,
     DealProvider,
@@ -10,6 +9,7 @@ import {
     SimpleBuilder,
     SimpleRefundBuilder,
 } from "../typechain-types"
+import { ethers } from "hardhat"
 
 export const deployed = async <T>(contractName: string, ...args: string[]): Promise<T> => {
     const Contract = await ethers.getContractFactory(contractName)
@@ -18,23 +18,14 @@ export const deployed = async <T>(contractName: string, ...args: string[]): Prom
 }
 
 async function deployAllContracts() {
-    // if don't have vaultManager address, can deploy MockVaultManager from mock folder
-    // const vaultManager: VaultManager = await deployed("VaultManager")
-    // console.log(`VaultManager contract deployed to ${vaultManager.address}`)
+    const vaultManager: VaultManager = await deployed("VaultManager")
+    console.log(`VaultManager contract deployed to ${vaultManager.address}`)
 
     const baseURI = "https://nft.poolz.finance/test/metadata/"
 
     // Deploy LockDealNFT contract
-    const lockDealNFT: LockDealNFT = await deployed(
-        "LockDealNFT",
-        "0xef6D8a9EA10E5032A83CCC9616255f7Df2B0d8DB",
-        baseURI
-    )
-    console.log(
-        `LockDealNFT contract deployed to ${
-            lockDealNFT.address
-        } with vaultManager ${"0xef6D8a9EA10E5032A83CCC9616255f7Df2B0d8DB"}`
-    )
+    const lockDealNFT: LockDealNFT = await deployed("LockDealNFT", vaultManager.address, baseURI)
+    console.log(`LockDealNFT contract deployed to ${lockDealNFT.address} with vaultManager ${vaultManager.address}`)
 
     // Deploy DealProvider contract
     const dealProvider: DealProvider = await deployed("DealProvider", lockDealNFT.address)
