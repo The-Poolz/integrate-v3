@@ -1,0 +1,10 @@
+node_modules
+artifacts
+cache
+temp.zip
+yarn.lock
+gas-report.txt
+typechain-types
+coverage
+coverage.json
+contracts
