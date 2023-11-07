@@ -2,12 +2,16 @@
 
 ## Deploy
 
-```console
-truffle dashboard
+```
+npm i
 ```
 
 ```console
 npx hardhat run ./scripts/fileImport.ts
+```
+
+```console
+truffle dashboard
 ```
 
 ```console
