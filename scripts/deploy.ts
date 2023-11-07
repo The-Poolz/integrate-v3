@@ -47,7 +47,7 @@ async function deployAllContracts() {
     // testnet v1DelayVault address: 0x607155A953d5f598d2F7CcD9a6395Af389cfecE5
     // mainnet v1DelayVault address: 0x5eb57B1210338b13E3D5572d5e1670285Aa71702
     const v1DelayVault = "0x607155A953d5f598d2F7CcD9a6395Af389cfecE5"
-    const Migrator = await ethers.getContractFactory("Migrator")
+    const Migrator = await ethers.getContractFactory("DelayVaultMigrator")
     const migrator = await Migrator.deploy(lockDealNFT.address, v1DelayVault)
     console.log(`Migrator contract deployed to ${migrator.address}`)
 
