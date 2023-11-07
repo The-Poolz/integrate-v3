@@ -8,6 +8,8 @@ import {
     VaultManager,
     SimpleBuilder,
     SimpleRefundBuilder,
+    DelayVaultMigrator,
+    IDelayVaultProvider,
 } from "../typechain-types"
 import { utils } from "ethers"
 import { ethers } from "hardhat"
@@ -47,14 +49,20 @@ async function deployAllContracts() {
     // testnet v1DelayVault address: 0x607155A953d5f598d2F7CcD9a6395Af389cfecE5
     // mainnet v1DelayVault address: 0x5eb57B1210338b13E3D5572d5e1670285Aa71702
     const v1DelayVault = "0x607155A953d5f598d2F7CcD9a6395Af389cfecE5"
-    const Migrator = await ethers.getContractFactory("DelayVaultMigrator")
-    const migrator = await Migrator.deploy(lockDealNFT.address, v1DelayVault)
+    const migrator: DelayVaultMigrator = await deployed("DelayVaultMigrator", v1DelayVault, lockDealNFT.address)
     console.log(`Migrator contract deployed to ${migrator.address}`)
 
     // Deploy DelayVaultProvider contract
     const DelayVaultProvider = await ethers.getContractFactory("DelayVaultProvider")
-    const settings = delayVaultSettings(dealProvider.address, lockProvider.address, timedDealProvider.address)
-    const delayVaultProvider = await DelayVaultProvider.deploy(lockDealNFT.address, migrator.address, settings)
+    const settings: IDelayVaultProvider.ProviderDataStruct[] = delayVaultSettings(
+        dealProvider.address,
+        lockProvider.address,
+        timedDealProvider.address
+    )
+    // testnet POOLX address: 0xE14A2A1006B83F363569BC7b5b733191E919ca34
+    // mainnet POOLX address: 0xbAeA9aBA1454DF334943951d51116aE342eAB255
+    const POOLX = "0xE14A2A1006B83F363569BC7b5b733191E919ca34"
+    const delayVaultProvider = await DelayVaultProvider.deploy(POOLX, migrator.address, settings)
     console.log(`DelayVaultProvider contract deployed to ${delayVaultProvider.address}`)
 
     // Deploy CollateralProvider contract
