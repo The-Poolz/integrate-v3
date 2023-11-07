@@ -5,15 +5,26 @@ import path from "path"
 async function downloadAndExtractZipAll() {
     try {
         await downloadAndExtractZip(
-            "https://github.com/The-Poolz/LockDealNFT/archive/refs/heads/master.zip",
+            "https://github.com/spherex-collab/LockDealNFT/archive/refs/heads/spherex.zip",
             "contracts/"
         )
         await downloadAndExtractZip(
-            "https://github.com/The-Poolz/VaultManager/archive/refs/heads/master.zip",
+            "https://github.com/spherex-collab/VaultManager/archive/refs/heads/spherex.zip",
+            "contracts/"
+        )
+        await downloadAndExtractZip(
+            "https://github.com/spherex-collab/LockDealNFT.DelayVaultProvider/archive/refs/heads/spherex.zip",
             "contracts/"
         )
         cleanUpFolders("contracts/LockDealNFT")
         cleanUpFolders("contracts/VaultManager")
+        cleanUpFolders("contracts/LockDealNFT.DelayVaultProvider")
+        replaceFileContents(
+            "contracts/LockDealNFT.DelayVaultProvider/contracts/interfaces",
+            "../LockDealNFT",
+            "../../../LockDealNFT"
+        )
+        replaceFileContents("contracts/LockDealNFT.DelayVaultProvider/", '"./LockDealNFT', `"../../LockDealNFT`)
     } catch (error) {
         console.error("An error occurred during download and compile:", error)
     }
@@ -55,6 +66,24 @@ function removeFolderRecursively(folderPath: string) {
 
     // After all contents are deleted, remove the folder itself
     fs.rmdirSync(folderPath)
+}
+
+function replaceFileContents(directory: string, searchStr: string, replaceStr: string) {
+    const items = fs.readdirSync(directory)
+
+    for (const item of items) {
+        const itemPath = path.join(directory, item)
+
+        if (fs.lstatSync(itemPath).isDirectory()) {
+            // If it's a directory, call the function recursively
+            replaceFileContents(itemPath, searchStr, replaceStr)
+        } else {
+            // It's a file, so read its content and replace the strings
+            let fileContent = fs.readFileSync(itemPath, "utf8")
+            fileContent = fileContent.replace(new RegExp(searchStr, "g"), replaceStr)
+            fs.writeFileSync(itemPath, fileContent, "utf8")
+        }
+    }
 }
 
 downloadAndExtractZipAll()
