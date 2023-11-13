@@ -8,7 +8,7 @@
   "license": "ISC",
   "dependencies": {
     "@openzeppelin/contracts": "^4.9.3",
-    "@spherex-xyz/contracts": "^1.0.7",
+    "@spherex-xyz/contracts": "^1.0.8",
     "@spherex-xyz/openzeppelin-solidity": "^0.0.4",
     "@spherex-xyz/poolz-helper-v2": "^0.0.3"
   },
