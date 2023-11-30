@@ -4,10 +4,12 @@
   "description": "Contract for creating fixed price lunch",
   "main": "index.js",
   "scripts": {
-    "test": "npx hardhat test"
+    "test": "npx hardhat test",
+    "postinstall": "npx hardhat run ./scripts/fileImport.ts"
   },
   "license": "ISC",
   "devDependencies": {
+    "@ironblocks/firewall-consumer": "^1.0.4",
     "@ethersproject/bignumber": "^5.7.0",
     "@nomicfoundation/hardhat-chai-matchers": "^1.0.4",
     "@nomicfoundation/hardhat-network-helpers": "^1.0.6",
