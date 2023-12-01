@@ -99,6 +99,12 @@ deployAllContracts().catch((error) => {
     process.exitCode = 1
 })
 
+// Example abi.hashex for encoded data: [
+//     ["0xb6bb31a46744f3946fcf799f74109d8b894778ca", [], "250000000000000000000"],
+//     ["0xa81cfa97856db04bc225a2dcc902dcd3fd7f9d84", [604800], "3500000000000000000000"],
+//     ["0x999a76a387ad9d199544cfbafad1673a2c39aa11", [604800, 2419200], "20000000000000000000000"],
+// ]
+
 function delayVaultSettings(dealProvider: string, lockProvider: string, timedDealProvider: string) {
     const tier1 = utils.parseUnits("250", 18)
     const tier2 = utils.parseUnits("3500", 18)
