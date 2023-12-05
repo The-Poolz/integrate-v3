@@ -8,10 +8,12 @@ import {
 } from "../typechain-types"
 import { ethers } from "hardhat"
 
-deployAllContracts().catch((error) => {
-    console.error(error)
-    process.exitCode = 1
-})
+export const deployed = async <T>(contractName: string, ...args: string[]): Promise<T> => {
+    const Contract = await ethers.getContractFactory(contractName)
+    const contract = await Contract.deploy(...args)
+    console.log(`${contractName} contract deployed to ${contract.address}`)
+    return contract.deployed() as Promise<T>
+}
 
 async function deployAllContracts() {
     const vaultManager: VaultManager = await deployed("VaultManager")
@@ -48,9 +50,7 @@ async function deployAllContracts() {
     await deployed("SimpleRefundBuilder", lockDealNFT.address, refundProvider.address, collateralProvider.address)
 }
 
-export const deployed = async <T>(contractName: string, ...args: string[]): Promise<T> => {
-    const Contract = await ethers.getContractFactory(contractName)
-    const contract = await Contract.deploy(...args)
-    console.log(`${contractName} contract deployed to ${contract.address}`)
-    return contract.deployed() as Promise<T>
-}
+deployAllContracts().catch((error) => {
+    console.error(error)
+    process.exitCode = 1
+})
