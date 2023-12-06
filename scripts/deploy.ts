@@ -44,7 +44,6 @@ async function deployAllContracts() {
     // mainnet v1DelayVault address: 0x5eb57B1210338b13E3D5572d5e1670285Aa71702
     const v1DelayVault = "0x607155A953d5f598d2F7CcD9a6395Af389cfecE5"
     const migrator: DelayVaultMigrator = await deployed("DelayVaultMigrator", lockDealNFT.address, v1DelayVault)
-    console.log(`Migrator contract deployed to ${migrator.address}`)
 
     // Deploy DelayVaultProvider contract
     const DelayVaultProvider = await ethers.getContractFactory("DelayVaultProvider")
@@ -56,8 +55,7 @@ async function deployAllContracts() {
     // testnet POOLX address: 0xE14A2A1006B83F363569BC7b5b733191E919ca34
     // mainnet POOLX address: 0xbAeA9aBA1454DF334943951d51116aE342eAB255
     const POOLX = "0xE14A2A1006B83F363569BC7b5b733191E919ca34"
-    const delayVaultProvider = await DelayVaultProvider.deploy(POOLX, migrator.address, settings)
-    console.log(`DelayVaultProvider contract deployed to ${delayVaultProvider.address}`)
+    await DelayVaultProvider.deploy(POOLX, migrator.address, settings)
 
     // Deploy CollateralProvider contract
     const collateralProvider: CollateralProvider = await deployed(
