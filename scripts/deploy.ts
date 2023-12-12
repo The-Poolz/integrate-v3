@@ -14,7 +14,7 @@ const deploy = async <T>(contractName: string, ...args: string[]): Promise<T> =>
     return contract
 }
 
-async function deployAllContracts(baseURI = "") {
+async function deployAllContracts(baseURI: string = "") {
     const vaultManager: VaultManager = await deploy("VaultManager")
 
     // Deploy LockDealNFT contract
