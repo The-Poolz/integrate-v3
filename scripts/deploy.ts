@@ -14,9 +14,8 @@ const deploy = async <T>(contractName: string, ...args: string[]): Promise<T> =>
     return contract
 }
 
-async function deployAllContracts() {
+async function deployAllContracts(baseURI = "") {
     const vaultManager: VaultManager = await deploy("VaultManager")
-    const baseURI = "https://nft.poolz.finance/test/metadata/"
 
     // Deploy LockDealNFT contract
     const lockDealNFT: LockDealNFT = await deploy("LockDealNFT", vaultManager.address, baseURI)
@@ -49,7 +48,8 @@ async function deployAllContracts() {
     await deploy("SimpleRefundBuilder", lockDealNFT.address, refundProvider.address, collateralProvider.address)
 }
 
-deployAllContracts().catch((error) => {
+const baseURI = "https://nft.poolz.finance/test/metadata/"
+deployAllContracts(baseURI).catch((error) => {
     console.error(error)
     process.exitCode = 1
 })
