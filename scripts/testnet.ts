@@ -13,7 +13,17 @@ import {
 } from "../typechain-types"
 import { Wallet } from "ethers"
 import { ethers } from "hardhat"
-import { deployFrom, setTrustee, approveContracts, createNewVault, approveToken } from "./utility"
+import {
+    deployFrom,
+    setTrustee,
+    approveContracts,
+    createNewVault,
+    approveToken,
+    createDealPool,
+    createLockPool,
+    createTimedPool,
+    createRefundPool,
+} from "./utility"
 
 const password = process.env.PASSWORD ?? ""
 const networkRPC = "https://bsc-testnet.publicnode.com"
@@ -27,7 +37,8 @@ let vaultManager: VaultManager,
     refundProvider: RefundProvider,
     simpleBuilder: SimpleBuilder,
     simpleRefundBuilder: SimpleRefundBuilder,
-    token: ERC20Token
+    token: ERC20Token,
+    mainCoin: ERC20Token
 
 async function main() {
     try {
@@ -59,6 +70,7 @@ async function deploy(user: Wallet) {
         collateralProvider.address
     )
     token = await deployFrom("ERC20Token", user, "Test Token", "TT")
+    mainCoin = await deployFrom("ERC20Token", user, "USDT", "TT")
 }
 
 async function setup(user: Wallet) {
@@ -73,11 +85,17 @@ async function setup(user: Wallet) {
         simpleRefundBuilder,
     ])
     await createNewVault(vaultManager, user, token.address)
+    await createNewVault(vaultManager, user, mainCoin.address)
     await approveToken(token, user, vaultManager.address)
+    await approveToken(mainCoin, user, vaultManager.address)
     console.log("Setup done")
 }
 
 async function createPools(user: Wallet): Promise<number[]> {
+    await createDealPool(user, dealProvider, vaultManager, token)
+    await createLockPool(user, lockProvider, vaultManager, token)
+    await createTimedPool(user, timedProvider, vaultManager, token)
+    await createRefundPool(user, refundProvider, timedProvider, vaultManager, token, mainCoin)
     return []
 }
 
