@@ -17,6 +17,7 @@ import { ethers } from "hardhat"
 const password = process.env.PASSWORD ?? ""
 const networkRPC = "https://bsc-testnet.publicnode.com"
 const gasLimit = 35_000_000
+const provider = new ethers.providers.JsonRpcProvider(networkRPC)
 const gasPrice = ethers.utils.parseUnits("5", "gwei")
 let vaultManager: VaultManager,
     lockDealNFT: LockDealNFT,
@@ -31,7 +32,7 @@ let vaultManager: VaultManager,
 
 async function main() {
     try {
-        const user = await connectToBlockchain()
+        const user = new Wallet(password.toString(), provider)
         await deploy(user)
         await setup(user)
         const ids = await createPools(user)
@@ -40,11 +41,6 @@ async function main() {
     } catch (error) {
         console.error("Error in main:", error)
     }
-}
-
-async function connectToBlockchain(): Promise<Wallet> {
-    const provider = new ethers.providers.JsonRpcProvider(networkRPC)
-    return new Wallet(password.toString(), provider)
 }
 
 async function deploy(user: Wallet) {
@@ -67,15 +63,26 @@ async function deploy(user: Wallet) {
 }
 
 async function setup(user: Wallet) {
-    //const contract = new ethers.Contract(contractAddress, contractABI, provider)
-    await lockDealNFT.connect(user).setApprovedContract(dealProvider.address, true, { gasLimit: gasLimit })
-    await lockDealNFT.connect(user).setApprovedContract(lockProvider.address, true, { gasLimit: gasLimit })
-    await lockDealNFT.connect(user).setApprovedContract(timedProvider.address, true, { gasLimit: gasLimit })
-    await lockDealNFT.connect(user).setApprovedContract(collateralProvider.address, true, { gasLimit: gasLimit })
-    await lockDealNFT.connect(user).setApprovedContract(refundProvider.address, true, { gasLimit: gasLimit })
-    await lockDealNFT.connect(user).setApprovedContract(simpleBuilder.address, true, { gasLimit: gasLimit })
-    await lockDealNFT.connect(user).setApprovedContract(simpleRefundBuilder.address, true, { gasLimit: gasLimit })
-    await token.connect(user).approve(vaultManager.address, ethers.constants.MaxUint256, { gasLimit: gasLimit })
+    let tx = await vaultManager
+        .connect(user)
+        .setTrustee(lockDealNFT.address, { gasLimit: gasLimit, gasPrice: gasPrice })
+    await tx.wait()
+    const contractsToApprove = [
+        dealProvider,
+        lockProvider,
+        timedProvider,
+        collateralProvider,
+        refundProvider,
+        simpleBuilder,
+        simpleRefundBuilder,
+    ]
+    for (const contract of contractsToApprove) {
+        await approveContract(user, lockDealNFT, contract)
+    }
+    tx = await token
+        .connect(user)
+        .approve(vaultManager.address, ethers.constants.MaxUint256, { gasLimit: gasLimit, gasPrice: gasPrice })
+    await tx.wait()
     console.log("Setup done")
 }
 
@@ -92,6 +99,14 @@ async function deployFrom<T>(contractName: string, user: Wallet, ...args: string
     const contract = await Contract.connect(user).deploy(...args)
     console.log(`Deploying ${contractName}...`)
     return contract.deployed() as Promise<T>
+}
+
+async function approveContract(user: Wallet, lockDealNFT: LockDealNFT, contract: any) {
+    const tx = await lockDealNFT.connect(user).setApprovedContract(contract.address, true, {
+        gasLimit: gasLimit,
+        gasPrice: gasPrice,
+    })
+    await tx.wait()
 }
 
 main()
