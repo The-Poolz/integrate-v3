@@ -13,12 +13,11 @@ import {
 } from "../typechain-types"
 import { Wallet } from "ethers"
 import { ethers } from "hardhat"
+import { deployFrom, setTrustee, approveContracts, createNewVault, approveToken } from "./utility"
 
 const password = process.env.PASSWORD ?? ""
 const networkRPC = "https://bsc-testnet.publicnode.com"
-const gasLimit = 35_000_000
 const provider = new ethers.providers.JsonRpcProvider(networkRPC)
-const gasPrice = ethers.utils.parseUnits("5", "gwei")
 let vaultManager: VaultManager,
     lockDealNFT: LockDealNFT,
     dealProvider: DealProvider,
@@ -63,11 +62,8 @@ async function deploy(user: Wallet) {
 }
 
 async function setup(user: Wallet) {
-    let tx = await vaultManager
-        .connect(user)
-        .setTrustee(lockDealNFT.address, { gasLimit: gasLimit, gasPrice: gasPrice })
-    await tx.wait()
-    const contractsToApprove = [
+    await setTrustee(vaultManager, user, lockDealNFT.address)
+    await approveContracts(user, lockDealNFT, [
         dealProvider,
         lockProvider,
         timedProvider,
@@ -75,14 +71,9 @@ async function setup(user: Wallet) {
         refundProvider,
         simpleBuilder,
         simpleRefundBuilder,
-    ]
-    for (const contract of contractsToApprove) {
-        await approveContract(user, lockDealNFT, contract)
-    }
-    tx = await token
-        .connect(user)
-        .approve(vaultManager.address, ethers.constants.MaxUint256, { gasLimit: gasLimit, gasPrice: gasPrice })
-    await tx.wait()
+    ])
+    await createNewVault(vaultManager, user, token.address)
+    await approveToken(token, user, vaultManager.address)
     console.log("Setup done")
 }
 
@@ -93,20 +84,5 @@ async function createPools(user: Wallet): Promise<number[]> {
 async function splitPools(user: Wallet, ids: number[]) {}
 
 async function withdrawPools(user: Wallet, ids: number[]) {}
-
-async function deployFrom<T>(contractName: string, user: Wallet, ...args: string[]): Promise<T> {
-    const Contract = await ethers.getContractFactory(contractName, user)
-    const contract = await Contract.connect(user).deploy(...args)
-    console.log(`Deploying ${contractName}...`)
-    return contract.deployed() as Promise<T>
-}
-
-async function approveContract(user: Wallet, lockDealNFT: LockDealNFT, contract: any) {
-    const tx = await lockDealNFT.connect(user).setApprovedContract(contract.address, true, {
-        gasLimit: gasLimit,
-        gasPrice: gasPrice,
-    })
-    await tx.wait()
-}
 
 main()
