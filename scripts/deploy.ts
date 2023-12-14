@@ -8,7 +8,7 @@ import {
 } from "../typechain-types"
 import { deployed } from "@poolzfinance/poolz-helper-v2"
 
-const deploy = async <T>(contractName: string, ...args: string[]): Promise<T> => {
+export const deploy = async <T>(contractName: string, ...args: string[]): Promise<T> => {
     const contract = (await deployed(contractName, ...args)) as unknown as T & { address: string }
     console.log(`${contractName} deployed at: ${contract.address}`)
     return contract

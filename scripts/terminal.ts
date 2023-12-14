@@ -1,55 +1,51 @@
-// Use commonjs-style import for inquirer
-const inquirer = require('inquirer');
+const inquirer = require("inquirer")
+const { exec } = require("child_process")
 
 // Definition of menu items
 const menuItems = [
-  { name: 'NFT + Vault Manager', value: 'item1' },
-  { name: 'Simple X3', value: 'item2' },
-  { name: 'Refund + Collateral', value: 'item3' },
-  { name: 'Builders X2', value: 'item4' },
-  { name: 'Delay Vault Provider', value: 'item5' },
-  { name: 'All', value: 'item6' },
-];
+    { name: "Deploy LockDealNFT and Vault Manager" },
+    { name: "Deploy Simple Providers" },
+    { name: "Deploy Refund Provider and Collateral Provider" },
+    { name: "Deploy SimpleBuilder and SimpleRefundBuilder" },
+    { name: "Deploy Delay Vault Provider and Delay Vault Migrator" },
+    { name: "Deploy All contracts\n\n" },
+]
 
-// Function to handle the "deploy" command
 function deployCommand(): void {
-  console.log('Deploying...'); // You can add deployment logic here
+    console.log("Deploying...") // You can add deployment logic here
 }
 
 // Function to display the menu
 async function displayMenu(): Promise<void> {
-  const answer = await inquirer.prompt([
-    {
-      type: 'list',
-      name: 'menuItem',
-      message: 'Choose a menu item:',
-      choices: menuItems,
-    },
-  ]) as { menuItem: string };
+    const GREEN_TEXT = "\x1b[32m"
+    const DEFAULT_TEXT = "\x1b[0m"
+    const answer = (await inquirer.prompt([
+        {
+            type: "list",
+            name: "menuItem",
+            message: "Choose a menu item:",
+            choices: menuItems,
+        },
+    ])) as { menuItem: string }
 
-  // Handling the selection
-  switch (answer.menuItem) {
-    case 'item1':
-      console.log('Selected Item 1');
-      break;
-    case 'item2':
-      console.log('Selected Item 2');
-      break;
-    case 'item3':
-      console.log('Selected Item 3');
-      break;
-    case 'item4':
-      console.log('Selected Item 4');
-      break;
-    case 'item5':
-      console.log('Selected Item 5');
-      break;
-    case 'item6':
-      console.log('Selected Item 6');
-      break;
-    default:
-      break;
-  }
+    // Handling the selection
+    switch (answer.menuItem) {
+        case menuItems[0].name:
+            exec("npx hardhat run ./scripts/utility/deployment.ts --network truffleDashboard")
+            break
+        case menuItems[1].name:
+            break
+        case menuItems[2].name:
+            break
+        case menuItems[3].name:
+            break
+        case menuItems[4].name:
+            break
+        case menuItems[5].name:
+            break
+        default:
+            break
+    }
 }
 
-displayMenu();
+displayMenu()

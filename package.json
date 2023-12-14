@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "npx hardhat test",
-    "deploy": "ts-node .\\scripts\\terminal.ts"
+    "deploy": "npx hardhat run ./scripts/fileImport.ts && npx hardhat compile && .\\scripts\\separate-scripts.bat"
   },
   "license": "ISC",
   "devDependencies": {
