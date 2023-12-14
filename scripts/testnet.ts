@@ -1,4 +1,6 @@
 import "dotenv/config"
+import { Wallet } from "ethers"
+import { ethers } from "hardhat"
 import {
     VaultManager,
     LockDealNFT,
@@ -11,19 +13,9 @@ import {
     SimpleRefundBuilder,
     ERC20Token,
 } from "../typechain-types"
-import { Wallet } from "ethers"
-import { ethers } from "hardhat"
-import {
-    deployFrom,
-    setTrustee,
-    approveContracts,
-    createNewVault,
-    approveToken,
-    createDealPool,
-    createLockPool,
-    createTimedPool,
-    createRefundPool,
-} from "./utility"
+import { deployFrom, setTrustee, approveContracts, createNewVault, approveToken } from "./utility/manageable"
+import { createSimpleNFT, createRefundNFT } from "./utility/creation"
+import { amount, startTime, finishTime } from "./utility/constants"
 
 const password = process.env.PASSWORD ?? ""
 const networkRPC = "https://bsc-testnet.publicnode.com"
@@ -84,19 +76,21 @@ async function setup(user: Wallet) {
         simpleBuilder,
         simpleRefundBuilder,
     ])
-    await createNewVault(vaultManager, user, token.address)
-    await createNewVault(vaultManager, user, mainCoin.address)
+    await createNewVault(vaultManager, user, token)
+    await createNewVault(vaultManager, user, mainCoin)
     await approveToken(token, user, vaultManager.address)
     await approveToken(mainCoin, user, vaultManager.address)
     console.log("Setup done")
 }
 
 async function createPools(user: Wallet): Promise<number[]> {
-    await createDealPool(user, dealProvider, vaultManager, token)
-    await createLockPool(user, lockProvider, vaultManager, token)
-    await createTimedPool(user, timedProvider, vaultManager, token)
-    await createRefundPool(user, refundProvider, timedProvider, vaultManager, token, mainCoin)
-    return []
+    const id = parseInt((await lockDealNFT.totalSupply()).toString())
+    await createSimpleNFT(user, dealProvider, vaultManager, token, [amount])
+    await createSimpleNFT(user, lockProvider, vaultManager, token, [amount, startTime])
+    await createSimpleNFT(user, timedProvider, vaultManager, token, [amount, startTime, finishTime])
+    await createRefundNFT(user, refundProvider, timedProvider, vaultManager, token, mainCoin)
+    // IDs are always [id, id + 1...] every time the script is run
+    return [id, id + 1, id + 2, id + 3, id + 5]
 }
 
 async function splitPools(user: Wallet, ids: number[]) {}
