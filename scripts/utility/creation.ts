@@ -33,7 +33,7 @@ async function createSimpleNFT(
 async function createRefundNFT(
     user: Wallet,
     refundProvider: RefundProvider,
-    provider: any,
+    provider: DealProvider | LockDealProvider | TimedDealProvider,
     vaultManager: VaultManager,
     token: ERC20Token,
     mainCoin: ERC20Token
