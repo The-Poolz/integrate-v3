@@ -15,7 +15,7 @@ import {
 } from "../typechain-types"
 import { deployFrom, setTrustee, approveContracts, createNewVault, approveToken } from "./utility/manageable"
 import { createSimpleNFT, createRefundNFT } from "./utility/creation"
-import { amount, startTime, finishTime } from "./utility/constants"
+import { amount, startTime, finishTime, gasLimit, gasPrice } from "./utility/constants"
 
 const password = process.env.PASSWORD ?? ""
 const networkRPC = "https://bsc-testnet.publicnode.com"
@@ -90,11 +90,35 @@ async function createPools(user: Wallet): Promise<number[]> {
     await createSimpleNFT(user, timedProvider, vaultManager, token, [amount, startTime, finishTime])
     await createRefundNFT(user, refundProvider, timedProvider, vaultManager, token, mainCoin)
     // IDs are always [id, id + 1...] every time the script is run
-    return [id, id + 1, id + 2, id + 3, id + 5]
+    return [id, id + 1, id + 2, id + 3]
 }
 
-async function splitPools(user: Wallet, ids: number[]) {}
+async function splitPools(user: Wallet, ids: number[]) {
+    const ratio = ethers.utils.parseUnits("5", 20) // 50%
+    const packedData = ethers.utils.defaultAbiCoder.encode(["uint256", "address"], [ratio, user.address])
+    for (const id of ids) {
+        const tx = await lockDealNFT
+            .connect(user)
+            ["safeTransferFrom(address,address,uint256,bytes)"](user.address, lockDealNFT.address, id, packedData, {
+                gasLimit,
+                gasPrice,
+            })
+        await tx.wait()
+    }
+    console.log("Split NFTs")
+}
 
-async function withdrawPools(user: Wallet, ids: number[]) {}
+async function withdrawPools(user: Wallet, ids: number[]) {
+    for (const id of ids) {
+        const tx = await lockDealNFT
+            .connect(user)
+            ["safeTransferFrom(address,address,uint256)"](user.address, lockDealNFT.address, id, {
+                gasLimit,
+                gasPrice,
+            })
+        await tx.wait()
+    }
+    console.log("Withdraw NFTs")
+}
 
 main()

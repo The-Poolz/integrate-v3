@@ -43,9 +43,10 @@ async function createRefundNFT(
     const mainCoinsignature = await getSignature(user, vaultManager, token, mainCoin.address)
     const addresses = [user.address, token.address, mainCoin.address, provider.address]
     const params = [amount, startTime, finishTime, amount, finishTime]
-    await refundProvider
+    const tx = await refundProvider
         .connect(user)
         .createNewRefundPool(addresses, params, tokenSignature, mainCoinsignature, { gasLimit, gasPrice })
+    await tx.wait()
     console.log(name + ` NFT created`)
 }
 
