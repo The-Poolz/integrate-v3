@@ -31,17 +31,21 @@ async function displayMenu(): Promise<void> {
     // Handling the selection
     switch (answer.menuItem) {
         case menuItems[0].name:
-            exec("npx hardhat run ./scripts/utility/deployment.ts --network truffleDashboard")
+            exec("npx hardhat run ./scripts/utility/deployment/VaultAndLockDealNFT.ts --network truffleDashboard")
             break
         case menuItems[1].name:
+            exec("npx hardhat run ./scripts/utility/deployment/SimpleProviders.ts --network truffleDashboard")
             break
         case menuItems[2].name:
+            exec("npx hardhat run ./scripts/utility/deployment/RefundAndCollateral.ts --network truffleDashboard")
             break
         case menuItems[3].name:
+            exec("npx hardhat run ./scripts/utility/deployment/Builders.ts --network truffleDashboard")
             break
         case menuItems[4].name:
             break
         case menuItems[5].name:
+            exec("npx hardhat run ./deploy.ts --network truffleDashboard")
             break
         default:
             break
