@@ -6,7 +6,7 @@ import {
     VaultManager,
     ERC20Token,
 } from "../../typechain-types"
-import { Wallet } from "ethers"
+import { Wallet, BigNumber } from "ethers"
 import { ethers } from "hardhat"
 import { gasLimit, gasPrice, startTime, finishTime, amount } from "./constants"
 
@@ -15,7 +15,7 @@ async function createSimpleNFT(
     provider: DealProvider | LockDealProvider | TimedDealProvider,
     vaultManager: VaultManager,
     token: ERC20Token,
-    poolParams: number[]
+    poolParams: BigNumber[]
 ) {
     const userAddress: string = await user.address
     const tokenSignature = await getSignature(user, vaultManager, token, token.address)
@@ -54,9 +54,10 @@ async function getSignature(
     user: Wallet,
     vaultManager: VaultManager,
     token: ERC20Token,
-    tokenAddress: string = token.address
+    tokenAddress: string = token.address,
+    tokenAmount: BigNumber = amount
 ) {
-    const dataToCheck = ethers.utils.solidityPack(["address", "uint256"], [tokenAddress, amount])
+    const dataToCheck = ethers.utils.solidityPack(["address", "uint256"], [tokenAddress, tokenAmount])
     const currentNonce = await vaultManager.nonces(user.address)
     const hash = ethers.utils.solidityKeccak256(
         ["bytes", "uint"],

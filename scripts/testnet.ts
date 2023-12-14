@@ -1,6 +1,4 @@
-import "dotenv/config"
 import { Wallet } from "ethers"
-import { ethers } from "hardhat"
 import {
     VaultManager,
     LockDealNFT,
@@ -15,11 +13,10 @@ import {
 } from "../typechain-types"
 import { deployFrom, setTrustee, approveContracts, createNewVault, approveToken } from "./utility/manageable"
 import { createSimpleNFT, createRefundNFT } from "./utility/creation"
-import { amount, startTime, finishTime, gasLimit, gasPrice } from "./utility/constants"
+import { amount, startTime, finishTime, password, provider } from "./utility/constants"
+import { _withdrawPools, _splitPools } from "./utility/control"
+import { createMassSimplePools, createMassRefundPools } from "./utility/builders"
 
-const password = process.env.PASSWORD ?? ""
-const networkRPC = "https://bsc-testnet.publicnode.com"
-const provider = new ethers.providers.JsonRpcProvider(networkRPC)
 let vaultManager: VaultManager,
     lockDealNFT: LockDealNFT,
     dealProvider: DealProvider,
@@ -40,6 +37,8 @@ async function main() {
         const ids = await createPools(user)
         await splitPools(user, ids)
         await withdrawPools(user, ids)
+        await createMassSimplePools(user, simpleBuilder, vaultManager, dealProvider.address, token)
+        await createMassRefundPools(user, simpleRefundBuilder, vaultManager, dealProvider.address, token, mainCoin)
     } catch (error) {
         console.error("Error in main:", error)
     }
@@ -94,30 +93,12 @@ async function createPools(user: Wallet): Promise<number[]> {
 }
 
 async function splitPools(user: Wallet, ids: number[]) {
-    const ratio = ethers.utils.parseUnits("5", 20) // 50%
-    const packedData = ethers.utils.defaultAbiCoder.encode(["uint256", "address"], [ratio, user.address])
-    for (const id of ids) {
-        const tx = await lockDealNFT
-            .connect(user)
-            ["safeTransferFrom(address,address,uint256,bytes)"](user.address, lockDealNFT.address, id, packedData, {
-                gasLimit,
-                gasPrice,
-            })
-        await tx.wait()
-    }
+    await _splitPools(user, lockDealNFT, ids)
     console.log("Split NFTs")
 }
 
 async function withdrawPools(user: Wallet, ids: number[]) {
-    for (const id of ids) {
-        const tx = await lockDealNFT
-            .connect(user)
-            ["safeTransferFrom(address,address,uint256)"](user.address, lockDealNFT.address, id, {
-                gasLimit,
-                gasPrice,
-            })
-        await tx.wait()
-    }
+    await _withdrawPools(user, lockDealNFT, ids)
     console.log("Withdraw NFTs")
 }
 
