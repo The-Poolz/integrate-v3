@@ -4,7 +4,8 @@
   "description": "Contract for creating fixed price lunch",
   "main": "index.js",
   "scripts": {
-    "test": "npx hardhat test"
+    "test": "npx hardhat test",
+    "testnet": "npx hardhat compile && npx ts-node ./scripts/testnet.ts"
   },
   "license": "ISC",
   "devDependencies": {
