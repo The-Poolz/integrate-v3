@@ -1,24 +1,18 @@
 const inquirer = require("inquirer")
+const util = require("util")
+const path = require("path")
 const { exec } = require("child_process")
 
-// Definition of menu items
+const execAsync = util.promisify(exec)
+
+const scriptPaths = ["VaultAndLockDealNFT.ts", "SimpleProviders.ts", "RefundAndCollateral.ts", "Builders.ts"]
+
 const menuItems = [
-    { name: "Deploy LockDealNFT and Vault Manager" },
-    { name: "Deploy Simple Providers" },
-    { name: "Deploy Refund Provider and Collateral Provider" },
-    { name: "Deploy SimpleBuilder and SimpleRefundBuilder" },
-    { name: "Deploy Delay Vault Provider and Delay Vault Migrator" },
+    ...scriptPaths.map((script) => ({ name: `Deploy ${script.replace(".ts", "")}` })),
     { name: "Deploy All contracts\n\n" },
 ]
 
-function deployCommand(): void {
-    console.log("Deploying...") // You can add deployment logic here
-}
-
-// Function to display the menu
-async function displayMenu(): Promise<void> {
-    const GREEN_TEXT = "\x1b[32m"
-    const DEFAULT_TEXT = "\x1b[0m"
+async function displayMenu() {
     const answer = (await inquirer.prompt([
         {
             type: "list",
@@ -28,27 +22,18 @@ async function displayMenu(): Promise<void> {
         },
     ])) as { menuItem: string }
 
-    // Handling the selection
-    switch (answer.menuItem) {
-        case menuItems[0].name:
-            exec("npx hardhat run ./scripts/utility/deployment/VaultAndLockDealNFT.ts --network truffleDashboard")
-            break
-        case menuItems[1].name:
-            exec("npx hardhat run ./scripts/utility/deployment/SimpleProviders.ts --network truffleDashboard")
-            break
-        case menuItems[2].name:
-            exec("npx hardhat run ./scripts/utility/deployment/RefundAndCollateral.ts --network truffleDashboard")
-            break
-        case menuItems[3].name:
-            exec("npx hardhat run ./scripts/utility/deployment/Builders.ts --network truffleDashboard")
-            break
-        case menuItems[4].name:
-            break
-        case menuItems[5].name:
-            exec("npx hardhat run ./deploy.ts --network truffleDashboard")
-            break
-        default:
-            break
+    try {
+        if (answer.menuItem === "Deploy All contracts\n\n") {
+            await execAsync("npx hardhat run ./deploy.ts --network truffleDashboard")
+        } else {
+            // Deploy the selected script
+            const scriptName = answer.menuItem.replace("Deploy ", "")
+            const scriptPath = path.join("scripts", "utility", "deployment", `${scriptName}.ts`)
+            await execAsync(`npx hardhat run ${scriptPath} --network truffleDashboard`)
+        }
+        console.log(`Command executed successfully: ${answer.menuItem}`)
+    } catch (error) {
+        console.error(`Error executing command: ` + error)
     }
 }
 
