@@ -1,14 +1,6 @@
 import { Wallet, constants } from "ethers"
-import { ERC20Token, LockDealNFT, VaultManager } from "../../typechain-types"
-import { ethers } from "hardhat"
+import { ERC20Token, LockDealNFT, VaultManager, IDelayVaultProvider } from "../../typechain-types"
 import { gasLimit, gasPrice } from "./constants"
-
-async function deployFrom<T>(contractName: string, user: Wallet, ...args: string[]): Promise<T> {
-    const Contract = await ethers.getContractFactory(contractName, user)
-    const contract = await Contract.connect(user).deploy(...args)
-    console.log(`Deploying ${contractName}...`)
-    return contract.deployed() as Promise<T>
-}
 
 async function setTrustee(vaultManager: VaultManager, user: Wallet, address: string) {
     const tx = await vaultManager.connect(user).setTrustee(address, { gasLimit, gasPrice })
@@ -39,4 +31,4 @@ async function approveContract(user: Wallet, lockDealNFT: LockDealNFT, contract:
     await tx.wait()
 }
 
-export { deployFrom, setTrustee, approveContracts, createNewVault, approveToken, approveContract }
+export { setTrustee, approveContracts, createNewVault, approveToken, approveContract }
