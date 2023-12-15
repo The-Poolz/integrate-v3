@@ -9,31 +9,30 @@ import {
     DelayVaultMigrator,
     IDelayVaultProvider,
 } from "../typechain-types"
+import { gasLimit, gasPrice } from "./utility/constants"
 import { utils } from "ethers"
 import { ethers } from "hardhat"
 
-export const deployed = async <T>(contractName: string, ...args: string[]): Promise<T> => {
+export const deploy = async <T>(contractName: string, ...args: string[]): Promise<T> => {
     const Contract = await ethers.getContractFactory(contractName)
-    const contract = await Contract.deploy(...args)
-    console.log(`${contractName} contract deployed to ${contract.address}`)
+    const contract = await Contract.deploy(...args, { gasLimit, gasPrice })
     return contract.deployed() as Promise<T>
 }
 
-async function deployAllContracts() {
-    const vaultManager: VaultManager = await deployed("VaultManager")
-    const baseURI = "https://nft.poolz.finance/test/metadata/"
+async function deployAllContracts(baseURI: string = "") {
+    const vaultManager: VaultManager = await deploy("VaultManager")
 
     // Deploy LockDealNFT contract
-    const lockDealNFT: LockDealNFT = await deployed("LockDealNFT", vaultManager.address, baseURI)
+    const lockDealNFT: LockDealNFT = await deploy("LockDealNFT", vaultManager.address, baseURI)
 
     // Deploy DealProvider contract
-    const dealProvider: DealProvider = await deployed("DealProvider", lockDealNFT.address)
+    const dealProvider: DealProvider = await deploy("DealProvider", lockDealNFT.address)
 
     // Deploy LockDealProvider contract
-    const lockProvider: LockDealProvider = await deployed("LockDealProvider", lockDealNFT.address, dealProvider.address)
+    const lockProvider: LockDealProvider = await deploy("LockDealProvider", lockDealNFT.address, dealProvider.address)
 
     // Deploy TimedDealProvider contract
-    const timedDealProvider: TimedDealProvider = await deployed(
+    const timedDealProvider: TimedDealProvider = await deploy(
         "TimedDealProvider",
         lockDealNFT.address,
         lockProvider.address
@@ -43,7 +42,7 @@ async function deployAllContracts() {
     // testnet v1DelayVault address: 0x607155A953d5f598d2F7CcD9a6395Af389cfecE5
     // mainnet v1DelayVault address: 0x5eb57B1210338b13E3D5572d5e1670285Aa71702
     const v1DelayVault = "0x607155A953d5f598d2F7CcD9a6395Af389cfecE5"
-    const migrator: DelayVaultMigrator = await deployed("DelayVaultMigrator", lockDealNFT.address, v1DelayVault)
+    const migrator: DelayVaultMigrator = await deploy("DelayVaultMigrator", lockDealNFT.address, v1DelayVault)
 
     // Deploy DelayVaultProvider contract
     const DelayVaultProvider = await ethers.getContractFactory("DelayVaultProvider")
@@ -58,25 +57,26 @@ async function deployAllContracts() {
     await DelayVaultProvider.deploy(POOLX, migrator.address, settings)
 
     // Deploy CollateralProvider contract
-    const collateralProvider: CollateralProvider = await deployed(
+    const collateralProvider: CollateralProvider = await deploy(
         "CollateralProvider",
         lockDealNFT.address,
         dealProvider.address
     )
 
     // Deploy RefundProvider contract
-    const refundProvider: RefundProvider = await deployed(
+    const refundProvider: RefundProvider = await deploy(
         "RefundProvider",
         lockDealNFT.address,
         collateralProvider.address
     )
 
     // Deploy Buiders
-    await deployed("SimpleBuilder", lockDealNFT.address)
-    await deployed("SimpleRefundBuilder", lockDealNFT.address, refundProvider.address, collateralProvider.address)
+    await deploy("SimpleBuilder", lockDealNFT.address)
+    await deploy("SimpleRefundBuilder", lockDealNFT.address, refundProvider.address, collateralProvider.address)
 }
 
-deployAllContracts().catch((error) => {
+const baseURI = ""
+deployAllContracts(baseURI).catch((error) => {
     console.error(error)
     process.exitCode = 1
 })
