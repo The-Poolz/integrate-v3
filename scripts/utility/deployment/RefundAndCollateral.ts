@@ -1,11 +1,16 @@
-import { CollateralProvider, LockDealNFT, DealProvider } from "../../../typechain-types"
-import { deploy } from "../../deploy"
+import { CollateralProvider } from "../../../typechain-types"
+import { deploy } from "../deployment"
 
-export async function deployRefundWithCollateral(lockDealNFT: LockDealNFT, dealProvider: DealProvider) {
+export async function deployRefundWithCollateral(lockDealNFT: string, provider: string) {
     const collateralProvider: CollateralProvider = await deploy(
         "CollateralProvider",
-        lockDealNFT.address,
-        dealProvider.address
+        lockDealNFT,
+        provider
     )
-    await deploy("RefundProvider", lockDealNFT.address, collateralProvider.address)
+    await deploy("RefundProvider", lockDealNFT, collateralProvider.address)
 }
+
+// Retrieve environment variables
+const lockDealNFT = process.env.LOCK_DEAL_NFT_ADDRESS || ""
+const provider = process.env.PROVIDER_ADDRESS || ""
+deployRefundWithCollateral(lockDealNFT, provider)

@@ -29,10 +29,21 @@ async function getLockDealNFTAddress() {
         {
             type: "input",
             name: "lockDealNFTAddress",
-            message: "Enter the LockDealNFT address for SimpleProviders deployment:",
+            message: "Enter the LockDealNFT address for deployment:",
         },
     ])
     return answer.lockDealNFTAddress
+}
+
+async function getDealProviderAddress() {
+    const answer = await inquirer.prompt([
+        {
+            type: "input",
+            name: "providerAddress",
+            message: "Enter the Deal Provider address for deployment:",
+        },
+    ])
+    return answer.providerAddress
 }
 
 async function displayMenu() {
@@ -57,6 +68,13 @@ async function displayMenu() {
                 process.env.LOCK_DEAL_NFT_ADDRESS = await getLockDealNFTAddress()
                 await execAsync(
                     "npx hardhat run scripts/utility/deployment/SimpleProviders.ts --network truffleDashboard"
+                )
+                break
+            case menuItems[2].name:
+                process.env.LOCK_DEAL_NFT_ADDRESS = await getLockDealNFTAddress()
+                process.env.PROVIDER_ADDRESS = await getDealProviderAddress()
+                await execAsync(
+                    "npx hardhat run scripts/utility/deployment/RefundAndCollateral.ts --network truffleDashboard"
                 )
                 break
             case "Deploy All contracts\n\n":
