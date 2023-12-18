@@ -2,17 +2,14 @@ import {
     LockDealNFT,
     DealProvider,
     LockDealProvider,
+    TimedDealProvider,
     CollateralProvider,
     RefundProvider,
     VaultManager,
+    DelayVaultMigrator,
 } from "../typechain-types"
-import { deployed } from "@poolzfinance/poolz-helper-v2"
-
-export const deploy = async <T>(contractName: string, ...args: string[]): Promise<T> => {
-    const contract = (await deployed(contractName, ...args)) as unknown as T & { address: string }
-    console.log(`${contractName} deployed at: ${contract.address}`)
-    return contract
-}
+import { v1DelayVaultTestnet, POOLXTestnet } from "./utility/constants"
+import { deploy, delayVaultSettings } from "./utility/deployment"
 
 async function deployAllContracts(baseURI: string = "") {
     const vaultManager: VaultManager = await deploy("VaultManager")
@@ -27,7 +24,22 @@ async function deployAllContracts(baseURI: string = "") {
     const lockProvider: LockDealProvider = await deploy("LockDealProvider", lockDealNFT.address, dealProvider.address)
 
     // Deploy TimedDealProvider contract
-    await deployed("TimedDealProvider", lockDealNFT.address, lockProvider.address)
+    const timedDealProvider: TimedDealProvider = await deploy(
+        "TimedDealProvider",
+        lockDealNFT.address,
+        lockProvider.address
+    )
+
+    // Deploy Migrator contract
+    const migrator: DelayVaultMigrator = await deploy("DelayVaultMigrator", lockDealNFT.address, v1DelayVaultTestnet)
+
+    // Deploy DelayVaultProvider contract
+    await deploy(
+        "DelayVaultProvider",
+        POOLXTestnet,
+        migrator.address,
+        delayVaultSettings(dealProvider.address, lockProvider.address, timedDealProvider.address)
+    )
 
     // Deploy CollateralProvider contract
     const collateralProvider: CollateralProvider = await deploy(
@@ -48,7 +60,7 @@ async function deployAllContracts(baseURI: string = "") {
     await deploy("SimpleRefundBuilder", lockDealNFT.address, refundProvider.address, collateralProvider.address)
 }
 
-const baseURI = "https://nft.poolz.finance/test/metadata/"
+const baseURI = ""
 deployAllContracts(baseURI).catch((error) => {
     console.error(error)
     process.exitCode = 1

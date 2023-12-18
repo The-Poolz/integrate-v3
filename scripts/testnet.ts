@@ -9,11 +9,22 @@ import {
     RefundProvider,
     SimpleBuilder,
     SimpleRefundBuilder,
+    DelayVaultMigrator,
+    DelayVaultProvider,
     ERC20Token,
 } from "../typechain-types"
-import { deployFrom, setTrustee, approveContracts, createNewVault, approveToken } from "./utility/manageable"
+import { deployFrom, delayVaultSettings } from "./utility/deployment"
+import { setTrustee, approveContracts, createNewVault, approveToken } from "./utility/manageable"
 import { createSimpleNFT, createRefundNFT } from "./utility/creation"
-import { amount, startTime, finishTime, password, provider } from "./utility/constants"
+import {
+    amount,
+    startTime,
+    finishTime,
+    password,
+    provider,
+    v1DelayVaultTestnet,
+    POOLXTestnet,
+} from "./utility/constants"
 import { _withdrawPools, _splitPools } from "./utility/control"
 import { createMassSimplePools, createMassRefundPools } from "./utility/builders"
 
@@ -27,7 +38,9 @@ let vaultManager: VaultManager,
     simpleBuilder: SimpleBuilder,
     simpleRefundBuilder: SimpleRefundBuilder,
     token: ERC20Token,
-    mainCoin: ERC20Token
+    mainCoin: ERC20Token,
+    migrator: DelayVaultMigrator,
+    delayVaultProvider: DelayVaultProvider
 
 async function main() {
     try {
@@ -60,6 +73,14 @@ async function deploy(user: Wallet) {
         refundProvider.address,
         collateralProvider.address
     )
+    migrator = await deployFrom("DelayVaultMigrator", user, lockDealNFT.address, v1DelayVaultTestnet)
+    delayVaultProvider = await deployFrom(
+        "DelayVaultProvider",
+        user,
+        POOLXTestnet,
+        migrator.address,
+        delayVaultSettings(dealProvider.address, lockProvider.address, timedProvider.address)
+    )
     token = await deployFrom("ERC20Token", user, "Test Token", "TT")
     mainCoin = await deployFrom("ERC20Token", user, "USDT", "TT")
 }
@@ -74,6 +95,8 @@ async function setup(user: Wallet) {
         refundProvider,
         simpleBuilder,
         simpleRefundBuilder,
+        migrator,
+        delayVaultProvider,
     ])
     await createNewVault(vaultManager, user, token)
     await createNewVault(vaultManager, user, mainCoin)
