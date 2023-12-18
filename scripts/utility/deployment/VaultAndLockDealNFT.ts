@@ -1,9 +1,12 @@
+import { deploy } from "../deployment"
 import { VaultManager } from "../../../typechain-types"
-import { deploy } from "../../deploy"
 
-export async function deployNFTandVaultManager(baseURI: string = "") {
+async function deployNFTandVaultManager(baseURI: string = "") {
     const vaultManager: VaultManager = await deploy("VaultManager")
     await deploy("LockDealNFT", vaultManager.address, baseURI)
 }
 
-deployNFTandVaultManager()
+// Retrieve environment variable
+const baseURI = process.env.BASEURI || ""
+
+deployNFTandVaultManager(baseURI)
