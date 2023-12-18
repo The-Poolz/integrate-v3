@@ -18,36 +18,56 @@ async function getBaseURI() {
             type: "input",
             name: "baseURI",
             message: "Enter the baseURI for NFT deployment:",
-            default: "", // You can set a default value if needed
+            default: "",
         },
     ])
     return answer.baseURI
 }
 
-async function displayMenu() {
-    const answer = (await inquirer.prompt([
+async function getLockDealNFTAddress() {
+    const answer = await inquirer.prompt([
         {
-            type: "list",
-            name: "menuItem",
-            message: "Choose a menu item:",
-            choices: menuItems,
+            type: "input",
+            name: "lockDealNFTAddress",
+            message: "Enter the LockDealNFT address for SimpleProviders deployment:",
         },
-    ])) as { menuItem: string }
+    ])
+    return answer.lockDealNFTAddress
+}
 
+async function displayMenu() {
     try {
-        if (answer.menuItem === menuItems[0].name) {
-            const baseURI = await getBaseURI()
-            process.env.BASEURI = baseURI
-            await execAsync(
-                `npx hardhat run scripts/utility/deployment/VaultAndLockDealNFT.ts --network truffleDashboard`
-            )
-        } else if (answer.menuItem === "Deploy All contracts\n\n") {
-            await execAsync("npx hardhat run scripts/deploy.ts --network truffleDashboard")
-        } else {
-            // Deploy the selected script
-            const scriptName = answer.menuItem.replace("Deploy ", "")
-            const scriptPath = path.join("scripts", "utility", "deployment", `${scriptName}.ts`)
-            await execAsync(`npx hardhat run ${scriptPath} --network truffleDashboard`)
+        const answer = await inquirer.prompt([
+            {
+                type: "list",
+                name: "menuItem",
+                message: "Choose a menu item:",
+                choices: menuItems,
+            },
+        ])
+
+        switch (answer.menuItem) {
+            case menuItems[0].name:
+                process.env.BASEURI = await getBaseURI()
+                await execAsync(
+                    "npx hardhat run scripts/utility/deployment/VaultAndLockDealNFT.ts --network truffleDashboard"
+                )
+                break
+            case menuItems[1].name:
+                process.env.LOCK_DEAL_NFT_ADDRESS = await getLockDealNFTAddress()
+                await execAsync(
+                    "npx hardhat run scripts/utility/deployment/SimpleProviders.ts --network truffleDashboard"
+                )
+                break
+            case "Deploy All contracts\n\n":
+                await execAsync("npx hardhat run scripts/deploy.ts --network truffleDashboard")
+                break
+            default:
+                // Deploy the selected script
+                const scriptName = answer.menuItem.replace("Deploy ", "")
+                const scriptPath = path.join("scripts", "utility", "deployment", `${scriptName}.ts`)
+                await execAsync(`npx hardhat run ${scriptPath} --network truffleDashboard`)
+                break
         }
         console.log(`Command executed successfully: ${answer.menuItem}`)
     } catch (error) {
