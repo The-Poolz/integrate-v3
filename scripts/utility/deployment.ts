@@ -22,17 +22,17 @@ export async function deployFrom<T>(contractName: string, user: Wallet, ...args:
 //     ["0x999a76a387ad9d199544cfbafad1673a2c39aa11", [604800, 2419200], "20000000000000000000000"],
 // ]
 
-export function delayVaultSettings(dealProvider: string, lockProvider: string, timedDealProvider: string) {
-    const tier1 = utils.parseUnits("250", 18)
-    const tier2 = utils.parseUnits("3500", 18)
+export function delayVaultSettings(lockProvider: string) {
+    const tier1 = utils.parseUnits("3499", 18)
+    const tier2 = utils.parseUnits("19999", 18)
     const tier3 = utils.parseUnits("20000", 18)
     const ONE_DAY = 86400
-    const week = ONE_DAY * 7
-    const startTime = week
-    const finishTime = week * 4
+    const tier1Timer = ONE_DAY * 10
+    const tier2Timer = ONE_DAY * 20
+    const tier3Timer = ONE_DAY * 30
     return [
-        { provider: dealProvider, params: [], limit: tier1 },
-        { provider: lockProvider, params: [startTime], limit: tier2 },
-        { provider: timedDealProvider, params: [startTime, finishTime], limit: tier3 },
+        { provider: lockProvider, params: [tier1Timer], limit: tier1 },
+        { provider: lockProvider, params: [tier2Timer], limit: tier2 },
+        { provider: lockProvider, params: [tier3Timer], limit: tier3 },
     ]
 }
