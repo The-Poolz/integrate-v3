@@ -58,4 +58,34 @@ async function getMenu(menuItems: { name: string }[]) {
     return answer.menuItem
 }
 
-export { getBaseURI, getLockDealNFTAddress, getDealProviderAddress, getCollateralProviderAddress, getMenu }
+async function getOldDelay() {
+    const answer = await inquirer.prompt([
+        {
+            type: "input",
+            name: "oldDelay",
+            message: "Enter the old delay address for deployment:",
+        },
+    ])
+    return answer.oldDelay
+}
+
+async function getNewDelay() {
+    const answer = await inquirer.prompt([
+        {
+            type: "input",
+            name: "newDelay",
+            message: "Enter the new delay address for deployment:",
+        },
+    ])
+    return answer.newDelay
+}
+
+export {
+    getBaseURI,
+    getLockDealNFTAddress,
+    getDealProviderAddress,
+    getCollateralProviderAddress,
+    getMenu,
+    getOldDelay,
+    getNewDelay,
+}

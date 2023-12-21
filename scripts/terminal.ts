@@ -8,6 +8,8 @@ import {
     getLockDealNFTAddress,
     getDealProviderAddress,
     getCollateralProviderAddress,
+    getOldDelay,
+    getNewDelay,
 } from "./utility/deployment/input"
 const execAsync = util.promisify(exec)
 
@@ -17,6 +19,7 @@ const scriptPaths = [
     "RefundAndCollateral.ts",
     "RefundProvider.ts",
     "Builders.ts",
+    "LightMigrator.ts",
 ]
 
 const menuItems = [
@@ -55,6 +58,13 @@ async function displayMenu() {
                     "npx hardhat run scripts/utility/deployment/RefundProvider.ts --network truffleDashboard"
                 )
                 break
+            case menuItems[5].name:
+                process.env.LOCK_DEAL_NFT_ADDRESS = await getLockDealNFTAddress()
+                process.env.OLD_DELAY = await getOldDelay()
+                process.env.NEW_DELAY = await getNewDelay()
+                await execAsync(
+                    "npx hardhat run scripts/utility/deployment/LightMigrator.ts --network truffleDashboard"
+                )
             case "Deploy All contracts\n\n":
                 await execAsync("npx hardhat run scripts/deploy.ts --network truffleDashboard")
                 break
