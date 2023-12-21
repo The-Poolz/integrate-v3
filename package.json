@@ -17,6 +17,7 @@
     "@nomiclabs/hardhat-ethers": "^2.2.1",
     "@nomiclabs/hardhat-etherscan": "^3.1.2",
     "@openzeppelin/contracts": "^4.8.3",
+    "@poolzfinance/poolz-helper-v2": "^2.2.1",
     "@trivago/prettier-plugin-sort-imports": "^4.0.0",
     "@truffle/dashboard-hardhat-plugin": "0.2.7",
     "@typechain/ethers-v5": "^10.1.1",
@@ -34,6 +35,7 @@
     "fs-extra": "^10.1.0",
     "hardhat": "^2.15.0",
     "hardhat-gas-reporter": "^1.0.9",
+    "inquirer": "^7.3.3",
     "lodash": "^4.17.21",
     "mocha": "^10.1.0",
     "rimraf": "^4.1.2",
@@ -41,8 +43,9 @@
     "ts-generator": "^0.1.1",
     "ts-node": "^10.9.1",
     "typechain": "^8.1.1",
-    "typescript": "^4.9.3",
-    "@poolzfinance/poolz-helper-v2": "^2.2.1",
-    "inquirer": "^7.3.3"
+    "typescript": "^4.9.3"
+  },
+  "dependencies": {
+    "tsconfig-paths": "^4.2.0"
   }
 }

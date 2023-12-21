@@ -1,8 +1,14 @@
-const inquirer = require("inquirer")
-const util = require("util")
+// scriptHandler.js
 const path = require("path")
 const { exec } = require("child_process")
-
+const util = require("util")
+import {
+    getMenu,
+    getBaseURI,
+    getLockDealNFTAddress,
+    getDealProviderAddress,
+    getCollateralProviderAddress,
+} from "./utility/deployment/input"
 const execAsync = util.promisify(exec)
 
 const scriptPaths = [
@@ -18,52 +24,11 @@ const menuItems = [
     { name: "Deploy All contracts\n\n" },
 ]
 
-async function getBaseURI() {
-    const answer = await inquirer.prompt([
-        {
-            type: "input",
-            name: "baseURI",
-            message: "Enter the baseURI for NFT deployment:",
-            default: "",
-        },
-    ])
-    return answer.baseURI
-}
-
-async function getLockDealNFTAddress() {
-    const answer = await inquirer.prompt([
-        {
-            type: "input",
-            name: "lockDealNFTAddress",
-            message: "Enter the LockDealNFT address for deployment:",
-        },
-    ])
-    return answer.lockDealNFTAddress
-}
-
-async function getDealProviderAddress() {
-    const answer = await inquirer.prompt([
-        {
-            type: "input",
-            name: "providerAddress",
-            message: "Enter the Deal Provider address for deployment:",
-        },
-    ])
-    return answer.providerAddress
-}
-
 async function displayMenu() {
     try {
-        const answer = await inquirer.prompt([
-            {
-                type: "list",
-                name: "menuItem",
-                message: "Choose a menu item:",
-                choices: menuItems,
-            },
-        ])
+        const answer = await getMenu(menuItems)
 
-        switch (answer.menuItem) {
+        switch (answer) {
             case menuItems[0].name:
                 process.env.BASEURI = await getBaseURI()
                 await execAsync(
@@ -85,7 +50,7 @@ async function displayMenu() {
                 break
             case menuItems[3].name:
                 process.env.LOCK_DEAL_NFT_ADDRESS = await getLockDealNFTAddress()
-                process.env.PROVIDER_ADDRESS = await getDealProviderAddress()
+                process.env.COLLATERAL = await getCollateralProviderAddress()
                 await execAsync(
                     "npx hardhat run scripts/utility/deployment/RefundProvider.ts --network truffleDashboard"
                 )
@@ -95,12 +60,12 @@ async function displayMenu() {
                 break
             default:
                 // Deploy the selected script
-                const scriptName = answer.menuItem.replace("Deploy ", "")
+                const scriptName = answer.replace("Deploy ", "")
                 const scriptPath = path.join("scripts", "utility", "deployment", `${scriptName}.ts`)
                 await execAsync(`npx hardhat run ${scriptPath} --network truffleDashboard`)
                 break
         }
-        console.log(`Command executed successfully: ${answer.menuItem}`)
+        console.log(`Command executed successfully: ${answer}`)
     } catch (error) {
         console.error(`Error executing command: ` + error)
     }
