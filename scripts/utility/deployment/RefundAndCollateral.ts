@@ -1,13 +1,10 @@
 import { CollateralProvider } from "../../../typechain-types"
 import { deploy } from "../deployment"
+import { deployRefundProvider } from "./RefundProvider"
 
 export async function deployRefundWithCollateral(lockDealNFT: string, provider: string) {
-    const collateralProvider: CollateralProvider = await deploy(
-        "CollateralProvider",
-        lockDealNFT,
-        provider
-    )
-    await deploy("RefundProvider", lockDealNFT, collateralProvider.address)
+    const collateralProvider: CollateralProvider = await deploy("CollateralProvider", lockDealNFT, provider)
+    await deployRefundProvider(lockDealNFT, collateralProvider.address)
 }
 
 // Retrieve environment variables

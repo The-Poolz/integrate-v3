@@ -5,7 +5,13 @@ const { exec } = require("child_process")
 
 const execAsync = util.promisify(exec)
 
-const scriptPaths = ["VaultAndLockDealNFT.ts", "SimpleProviders.ts", "RefundAndCollateral.ts", "Builders.ts"]
+const scriptPaths = [
+    "VaultAndLockDealNFT.ts",
+    "SimpleProviders.ts",
+    "RefundAndCollateral.ts",
+    "RefundProvider.ts",
+    "Builders.ts",
+]
 
 const menuItems = [
     ...scriptPaths.map((script) => ({ name: `Deploy ${script.replace(".ts", "")}` })),
@@ -75,6 +81,13 @@ async function displayMenu() {
                 process.env.PROVIDER_ADDRESS = await getDealProviderAddress()
                 await execAsync(
                     "npx hardhat run scripts/utility/deployment/RefundAndCollateral.ts --network truffleDashboard"
+                )
+                break
+            case menuItems[3].name:
+                process.env.LOCK_DEAL_NFT_ADDRESS = await getLockDealNFTAddress()
+                process.env.PROVIDER_ADDRESS = await getDealProviderAddress()
+                await execAsync(
+                    "npx hardhat run scripts/utility/deployment/RefundProvider.ts --network truffleDashboard"
                 )
                 break
             case "Deploy All contracts\n\n":
