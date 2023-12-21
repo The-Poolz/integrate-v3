@@ -8,7 +8,7 @@ import {
     VaultManager,
     DelayVaultMigrator,
 } from "../typechain-types"
-import { v1DelayVaultTestnet, POOLXTestnet } from "./utility/constants"
+import { v1DelayVault, POOLX } from "./utility/constants"
 import { deploy, delayVaultSettings } from "./utility/deployment"
 
 async function deployAllContracts(baseURI: string = "") {
@@ -24,22 +24,13 @@ async function deployAllContracts(baseURI: string = "") {
     const lockProvider: LockDealProvider = await deploy("LockDealProvider", lockDealNFT.address, dealProvider.address)
 
     // Deploy TimedDealProvider contract
-    const timedDealProvider: TimedDealProvider = await deploy(
-        "TimedDealProvider",
-        lockDealNFT.address,
-        lockProvider.address
-    )
+    await deploy("TimedDealProvider", lockDealNFT.address, lockProvider.address)
 
     // Deploy Migrator contract
-    const migrator: DelayVaultMigrator = await deploy("DelayVaultMigrator", lockDealNFT.address, v1DelayVaultTestnet)
+    const migrator: DelayVaultMigrator = await deploy("DelayVaultMigrator", lockDealNFT.address, v1DelayVault)
 
     // Deploy DelayVaultProvider contract
-    await deploy(
-        "DelayVaultProvider",
-        POOLXTestnet,
-        migrator.address,
-        delayVaultSettings(dealProvider.address, lockProvider.address, timedDealProvider.address)
-    )
+    await deploy("DelayVaultProvider", POOLX, migrator.address, delayVaultSettings(lockProvider.address))
 
     // Deploy CollateralProvider contract
     const collateralProvider: CollateralProvider = await deploy(
