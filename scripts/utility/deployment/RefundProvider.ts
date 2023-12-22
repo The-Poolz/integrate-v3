@@ -7,4 +7,5 @@ export async function deployRefundProvider(lockDealNFT: string, collateralProvid
 // Retrieve environment variables
 const lockDealNFT = process.env.LOCK_DEAL_NFT_ADDRESS || ""
 const provider = process.env.COLLATERAL || ""
+
 deployRefundProvider(lockDealNFT, provider)

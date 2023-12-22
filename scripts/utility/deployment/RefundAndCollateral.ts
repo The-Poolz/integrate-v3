@@ -10,4 +10,5 @@ export async function deployRefundWithCollateral(lockDealNFT: string, provider: 
 // Retrieve environment variables
 const lockDealNFT = process.env.LOCK_DEAL_NFT_ADDRESS || ""
 const provider = process.env.PROVIDER_ADDRESS || ""
+
 deployRefundWithCollateral(lockDealNFT, provider)

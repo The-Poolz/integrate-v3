@@ -48,6 +48,10 @@ async function getNewDelay() {
     return await promptUser("Enter the new delay address for deployment:", "newDelay")
 }
 
+async function getRefundProviderAddress() {
+    return await promptUser("Enter the Refund Provider address for deployment:", "refundProviderAddress")
+}
+
 export {
     getBaseURI,
     getLockDealNFTAddress,
@@ -56,4 +60,5 @@ export {
     getMenu,
     getOldDelay,
     getNewDelay,
+    getRefundProviderAddress,
 }

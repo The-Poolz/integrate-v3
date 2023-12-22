@@ -10,4 +10,5 @@ export async function deploySimpleProviders(lockDealNFT: string) {
 }
 
 const lockDealNFTAddress = process.env.LOCK_DEAL_NFT_ADDRESS || "";
+
 deploySimpleProviders(lockDealNFTAddress);

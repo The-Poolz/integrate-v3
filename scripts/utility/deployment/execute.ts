@@ -8,6 +8,7 @@ import {
     getDealProviderAddress,
     getOldDelay,
     getNewDelay,
+    getRefundProviderAddress,
 } from "./input";
 
 const execAsync = util.promisify(exec);
@@ -47,4 +48,11 @@ export async function deployLightMigrator() {
     process.env.OLD_DELAY = await getOldDelay();
     process.env.NEW_DELAY = await getNewDelay();
     await executeScript("LightMigrator", "scripts/utility/deployment/LightMigrator.ts");
+}
+
+export async function deployBuilders() {
+    process.env.LOCK_DEAL_NFT_ADDRESS = await getLockDealNFTAddress();
+    process.env.REFUND_PROVIDER_ADDRESS = await getRefundProviderAddress();
+    process.env.COLLATERAL_PROVIDER_ADDRESS = await getCollateralProviderAddress();
+    await executeScript("Builders", "scripts/utility/deployment/Builders.ts");
 }
