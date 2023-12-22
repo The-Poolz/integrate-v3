@@ -7,6 +7,7 @@ import {
     deployRefundAndCollateral,
     deployLightMigrator,
     deployBuilders,
+    deployAllContracts,
 } from "./utility/deployment/execute"
 
 const scriptPaths = [
@@ -45,6 +46,7 @@ async function displayMenu() {
                 await deployLightMigrator()
                 break
             case "Deploy All contracts":
+                await deployAllContracts()
                 break
         }
 

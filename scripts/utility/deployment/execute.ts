@@ -56,3 +56,8 @@ export async function deployBuilders() {
     process.env.COLLATERAL_PROVIDER_ADDRESS = await getCollateralProviderAddress();
     await executeScript("Builders", "scripts/utility/deployment/Builders.ts");
 }
+
+export async function deployAllContracts() {
+    process.env.BASEURI = await getBaseURI();
+    await executeScript("AllContracts", "scripts/deploy.ts");
+}
