@@ -8,6 +8,7 @@ import {
     deployLightMigrator,
     deployBuilders,
     deployAllContracts,
+    deployDelayProviderAndMigrator,
 } from "./utility/deployment/execute"
 
 const scriptPaths = [
@@ -17,10 +18,13 @@ const scriptPaths = [
     "RefundAndCollateral.ts",
     "Builders.ts",
     "LightMigrator.ts",
+    "DelayVaultProvider.ts",
 ]
 
-const menuItems = scriptPaths.map((script) => ({ name: `Deploy ${script.replace(".ts", "")}` }))
-menuItems.push({ name: "Deploy All contracts" })
+const menuItems = [
+    { name: "Deploy All contracts" },
+    ...scriptPaths.map((script) => ({ name: `Deploy ${script.replace(".ts", "")}` })),
+]
 
 async function displayMenu() {
     try {
@@ -44,6 +48,9 @@ async function displayMenu() {
                 break
             case menuItems[5].name:
                 await deployLightMigrator()
+                break
+            case menuItems[6].name:
+                await deployDelayProviderAndMigrator()
                 break
             case "Deploy All contracts":
                 await deployAllContracts()

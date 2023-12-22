@@ -6,6 +6,7 @@ import {
     getLockDealNFTAddress,
     getCollateralProviderAddress,
     getDealProviderAddress,
+    getLockProviderAddress,
     getOldDelay,
     getNewDelay,
     getRefundProviderAddress,
@@ -55,6 +56,13 @@ export async function deployBuilders() {
     process.env.REFUND_PROVIDER_ADDRESS = await getRefundProviderAddress();
     process.env.COLLATERAL_PROVIDER_ADDRESS = await getCollateralProviderAddress();
     await executeScript("Builders", "scripts/utility/deployment/Builders.ts");
+}
+
+export async function deployDelayProviderAndMigrator() {
+    process.env.LOCK_DEAL_NFT_ADDRESS = await getLockDealNFTAddress();
+    process.env.V1_DELAY_VAULT = await getOldDelay();
+    process.env.LOCK_PROVIDER = await getLockProviderAddress();
+    await executeScript("DelayProviderAndMigrator", "scripts/utility/deployment/DelayVaultProvider.ts");
 }
 
 export async function deployAllContracts() {

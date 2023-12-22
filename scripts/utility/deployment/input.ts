@@ -32,12 +32,16 @@ async function getDealProviderAddress() {
     return await promptUser("Enter the Deal Provider address for deployment:", "providerAddress")
 }
 
+async function getLockProviderAddress() {
+    return await promptUser("Enter the Lock Provider address for deployment:", "providerAddress")
+}
+
 async function getCollateralProviderAddress() {
     return await promptUser("Enter the Collateral Provider address for deployment:", "collateralProviderAddress")
 }
 
 async function getMenu(menuItems: { name: string }[]) {
-    return await promptUser("Choose a menu item:", "menuItem", "list", menuItems)
+    return await promptUser("Choose a menu item:\n", "menuItem", "list", menuItems)
 }
 
 async function getOldDelay() {
@@ -56,6 +60,7 @@ export {
     getBaseURI,
     getLockDealNFTAddress,
     getDealProviderAddress,
+    getLockProviderAddress,
     getCollateralProviderAddress,
     getMenu,
     getOldDelay,
