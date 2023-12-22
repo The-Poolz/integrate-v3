@@ -1,83 +1,51 @@
 // inquirerPrompts.js
 const inquirer = require("inquirer")
 
-async function getBaseURI() {
+async function promptUser(
+    message: string,
+    name: string,
+    type = "input",
+    choices: { name: string }[] = [],
+    defaultValue = ""
+) {
     const answer = await inquirer.prompt([
         {
-            type: "input",
-            name: "baseURI",
-            message: "Enter the baseURI for NFT deployment:",
-            default: "",
+            type,
+            name,
+            message,
+            choices,
+            default: defaultValue,
         },
     ])
-    return answer.baseURI
+    return answer[name]
+}
+
+async function getBaseURI() {
+    return await promptUser("Enter the baseURI for NFT deployment:", "baseURI")
 }
 
 async function getLockDealNFTAddress() {
-    const answer = await inquirer.prompt([
-        {
-            type: "input",
-            name: "lockDealNFTAddress",
-            message: "Enter the LockDealNFT address for deployment:",
-        },
-    ])
-    return answer.lockDealNFTAddress
+    return await promptUser("Enter the LockDealNFT address for deployment:", "lockDealNFTAddress")
 }
 
 async function getDealProviderAddress() {
-    const answer = await inquirer.prompt([
-        {
-            type: "input",
-            name: "providerAddress",
-            message: "Enter the Deal Provider address for deployment:",
-        },
-    ])
-    return answer.providerAddress
+    return await promptUser("Enter the Deal Provider address for deployment:", "providerAddress")
 }
 
 async function getCollateralProviderAddress() {
-    const answer = await inquirer.prompt([
-        {
-            type: "input",
-            name: "collateralProviderAddress",
-            message: "Enter the Collateral Provider address for deployment:",
-        },
-    ])
-    return answer.collateralProviderAddress
+    return await promptUser("Enter the Collateral Provider address for deployment:", "collateralProviderAddress")
 }
 
 async function getMenu(menuItems: { name: string }[]) {
-    const answer = await inquirer.prompt([
-        {
-            type: "list",
-            name: "menuItem",
-            message: "Choose a menu item:",
-            choices: menuItems,
-        },
-    ])
-    return answer.menuItem
+    return await promptUser("Choose a menu item:", "menuItem", "list", menuItems)
 }
 
 async function getOldDelay() {
-    const answer = await inquirer.prompt([
-        {
-            type: "input",
-            name: "oldDelay",
-            message: "Enter the old delay address for deployment:",
-        },
-    ])
-    return answer.oldDelay
+    return await promptUser("Enter the old delay address for deployment:", "oldDelay")
 }
 
 async function getNewDelay() {
-    const answer = await inquirer.prompt([
-        {
-            type: "input",
-            name: "newDelay",
-            message: "Enter the new delay address for deployment:",
-        },
-    ])
-    return answer.newDelay
+    return await promptUser("Enter the new delay address for deployment:", "newDelay")
 }
 
 export {
