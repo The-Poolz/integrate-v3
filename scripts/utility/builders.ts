@@ -2,7 +2,7 @@ import { Wallet } from "ethers"
 import { gasLimit, gasPrice, amount } from "./constants"
 import { SimpleBuilder, SimpleRefundBuilder, ERC20Token, VaultManager } from "../../typechain-types"
 import { getSignature } from "./creation"
-import { BuilderState } from "../../typechain-types/contracts/LockDealNFT/contracts/Builders/SimpleBuilder/SimpleBuilder"
+import { BuilderState } from "../../typechain-types"
 import { finishTime } from "./constants"
 
 const sendData: BuilderState.BuilderStruct = {
