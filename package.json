@@ -6,6 +6,7 @@
   "scripts": {
     "test": "npx hardhat test",
     "postinstall": "npx hardhat run ./scripts/fileImport.ts",
+    "menu": "npx hardhat compile && .\\scripts\\separate-scripts.bat",
     "testnet": "npx hardhat compile && npx ts-node ./scripts/testnet.ts"
   },
   "license": "ISC",
@@ -18,20 +19,23 @@
     "@nomiclabs/hardhat-ethers": "^2.2.1",
     "@nomiclabs/hardhat-etherscan": "^3.1.2",
     "@trivago/prettier-plugin-sort-imports": "^4.0.0",
+    "@truffle/dashboard-hardhat-plugin": "0.2.7",
     "@typechain/ethers-v5": "^10.1.1",
     "@typechain/hardhat": "^6.1.4",
     "@types/chai": "^4.3.4",
     "@types/fs-extra": "^9.0.13",
+    "@types/inquirer": "^9.0.7",
     "@types/mocha": "^10.0.0",
-    "@types/node": "^18.11.9",
+    "@types/node": "^18.19.3",
     "@typescript-eslint/eslint-plugin": "^5.44.0",
-    "@truffle/dashboard-hardhat-plugin": "0.2.7",
     "@typescript-eslint/parser": "^5.44.0",
     "chai": "^4.3.7",
+    "dotenv": "^16.3.1",
     "ethers": "^5.7.2",
     "fs-extra": "^10.1.0",
     "hardhat": "^2.15.0",
     "hardhat-gas-reporter": "^1.0.9",
+    "inquirer": "^7.3.3",
     "lodash": "^4.17.21",
     "mocha": "^10.1.0",
     "rimraf": "^4.1.2",
@@ -39,9 +43,11 @@
     "ts-generator": "^0.1.1",
     "ts-node": "^10.9.1",
     "typechain": "^8.1.1",
-    "typescript": "^4.9.3",
-    "dotenv": "^16.3.1",
     "@openzeppelin/contracts": "^4.8.3",
-    "@poolzfinance/poolz-helper-v2": "^2.2.2"
+    "@poolzfinance/poolz-helper-v2": "^2.2.2",
+    "typescript": "^4.9.3"
+  },
+  "dependencies": {
+    "tsconfig-paths": "^4.2.0"
   }
 }

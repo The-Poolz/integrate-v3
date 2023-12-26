@@ -1,6 +1,11 @@
 import { SimpleBuilder, SimpleRefundBuilder, ERC20Token, VaultManager } from "../../typechain-types"
+<<<<<<< HEAD
 import { BuilderState } from "../../typechain-types/contracts/LockDealNFT/contracts/Builders/SimpleBuilder/SimpleBuilder"
 import { gasLimit, gasPrice, amount } from "./constants"
+=======
+import { getSignature } from "./creation"
+import { BuilderState } from "../../typechain-types"
+>>>>>>> a04f5e2817183929e54f6b1dae650d7656729ad5
 import { finishTime } from "./constants"
 import { getSignature } from "./creation"
 import { Wallet } from "ethers"
