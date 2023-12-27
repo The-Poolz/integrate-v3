@@ -51,7 +51,8 @@ async function deployAllContracts(baseURI: string = "") {
     await deploy("SimpleRefundBuilder", lockDealNFT.address, refundProvider.address, collateralProvider.address)
 }
 
-const baseURI = ""
+const baseURI = process.env.BASEURI || ""
+
 deployAllContracts(baseURI).catch((error) => {
     console.error(error)
     process.exitCode = 1
