@@ -9,11 +9,11 @@ npm i
 ## Truffle dashboard deployment
 
 ```console
-truffle dashboard
+npx hardhat run ./scripts/fileImport.ts
 ```
 
 ```console
-npx hardhat run ./scripts/fileImport.ts
+truffle dashboard
 ```
 
 ```console

@@ -1,9 +1,9 @@
-import { Wallet } from "ethers"
-import { gasLimit, gasPrice, amount } from "./constants"
 import { SimpleBuilder, SimpleRefundBuilder, ERC20Token, VaultManager } from "../../typechain-types"
-import { getSignature } from "./creation"
-import { BuilderState } from "../../typechain-types"
+import { BuilderState } from "../../typechain-types/contracts/LockDealNFT/contracts/Builders/SimpleBuilder/SimpleBuilder"
+import { gasLimit, gasPrice, amount } from "./constants"
 import { finishTime } from "./constants"
+import { getSignature } from "./creation"
+import { Wallet } from "ethers"
 
 const sendData: BuilderState.BuilderStruct = {
     userPools: [
