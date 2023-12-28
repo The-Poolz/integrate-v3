@@ -35,5 +35,5 @@ jobs:
       - name: compile contracts
         run: npx hardhat compile
 
-      - name: deploy simulation
-        run: npx hardhat run ./scripts/deploy.ts
+      - name: deployment and testing
+        run: npx hardhat test
