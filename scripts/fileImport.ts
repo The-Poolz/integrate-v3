@@ -4,15 +4,15 @@ import { cleanUpFolders, replaceFileContents } from "@poolzfinance/poolz-helper-
 async function downloadAndExtractZipAll() {
     try {
         await downloadAndExtractZip(
-            "https://github.com/The-Poolz/LockDealNFT/archive/refs/heads/ironblocks.zip",
+            "https://github.com/The-Poolz/LockDealNFT/archive/refs/heads/master.zip",
             "contracts/"
         )
         await downloadAndExtractZip(
-            "https://github.com/The-Poolz/VaultManager/archive/refs/heads/ironblocks.zip",
+            "https://github.com/The-Poolz/VaultManager/archive/refs/heads/master.zip",
             "contracts/"
         )
         await downloadAndExtractZip(
-            "https://github.com/The-Poolz/LockDealNFT.DelayVaultProvider/archive/refs/heads/ironblocks.zip",
+            "https://github.com/The-Poolz/LockDealNFT.DelayVaultProvider/archive/refs/heads/master.zip",
             "contracts/"
         )
         await cleanUpFolders("contracts/LockDealNFT")
