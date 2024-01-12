@@ -6,8 +6,8 @@
   "scripts": {
     "test": "npx hardhat test",
     "postinstall": "npx hardhat run ./scripts/fileImport.ts",
-    "menu": "npx hardhat compile && .\\scripts\\separate-scripts.bat",
-    "testnet": "npx hardhat compile && npx ts-node ./scripts/testnet.ts"
+    "menu": "npx hardhat run ./scripts/fileImport.ts && npx hardhat compile && .\\scripts\\separate-scripts.bat",
+    "testnet": "npx hardhat run ./scripts/fileImport.ts && npx hardhat compile && npx ts-node ./scripts/testnet.ts"
   },
   "license": "ISC",
   "devDependencies": {
