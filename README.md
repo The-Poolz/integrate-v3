@@ -6,6 +6,11 @@
 npm i
 ```
 
+## Run deployment menu
+```console
+npm run menu
+```
+
 ## Truffle dashboard deployment
 
 ```console

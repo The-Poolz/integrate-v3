@@ -79,7 +79,7 @@ async function deploy(user: Wallet) {
         user,
         POOLXTestnet,
         migrator.address,
-        delayVaultSettings(dealProvider.address, lockProvider.address, timedProvider.address)
+        delayVaultSettings(lockProvider.address)
     )
     token = await deployFrom("ERC20Token", user, "Test Token", "TT")
     mainCoin = await deployFrom("ERC20Token", user, "USDT", "TT")

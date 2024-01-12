@@ -1,19 +1,25 @@
 import { downloadAndExtractZip } from "@poolzfinance/poolz-helper-v2"
-import { cleanUpFolders, replaceFileContents } from "@poolzfinance/poolz-helper-v2"
+import { cleanUpFolders, replaceFileContents, removeFolderRecursively } from "@poolzfinance/poolz-helper-v2"
+import { existsSync } from "fs"
 
 async function downloadAndExtractZipAll() {
     try {
+        const contractsFolder = "contracts/"
+        // Check if the folder exists before attempting to remove it
+        if (existsSync(contractsFolder)) {
+            await removeFolderRecursively(contractsFolder)
+        }
         await downloadAndExtractZip(
             "https://github.com/The-Poolz/LockDealNFT/archive/refs/heads/master.zip",
-            "contracts/"
+            contractsFolder
         )
         await downloadAndExtractZip(
             "https://github.com/The-Poolz/VaultManager/archive/refs/heads/master.zip",
-            "contracts/"
+            contractsFolder
         )
         await downloadAndExtractZip(
             "https://github.com/The-Poolz/LockDealNFT.DelayVaultProvider/archive/refs/heads/master.zip",
-            "contracts/"
+            contractsFolder
         )
         await cleanUpFolders("contracts/LockDealNFT")
         await cleanUpFolders("contracts/VaultManager")
