@@ -26,12 +26,6 @@ async function deployAllContracts(baseURI: string = "") {
     // Deploy TimedDealProvider contract
     await deploy("TimedDealProvider", lockDealNFT.address, lockProvider.address)
 
-    // Deploy Migrator contract
-    const migrator: DelayVaultMigrator = await deploy("DelayVaultMigrator", lockDealNFT.address, v1DelayVault)
-
-    // Deploy DelayVaultProvider contract
-    await deploy("DelayVaultProvider", POOLX, migrator.address, delayVaultSettings(lockProvider.address))
-
     // Deploy CollateralProvider contract
     const collateralProvider: CollateralProvider = await deploy(
         "CollateralProvider",
