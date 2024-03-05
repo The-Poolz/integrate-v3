@@ -18,11 +18,11 @@ npx hardhat run ./scripts/fileImport.ts
 ```
 
 ```console
-truffle dashboard
+npx truffle dashboard
 ```
 
 ```console
-npx hardhat run ./scripts/deploy.ts --network truffleDashboard
+npx hardhat run ./scripts/createNewPool.ts --network truffleDashboard
 ```
 
 ## Automated testnet transactions
