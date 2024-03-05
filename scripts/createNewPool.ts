@@ -35,7 +35,7 @@ async function createNewPool() {
     await tx.wait()
     const addresses = [toAddress, tokenAddress]
     const params = [amount]
-    await dealProvider.createNewPool(addresses, params, signature, {gasLimit: gasLimit, gasPrice: gasPrice})
+    await dealProvider.createNewPool(addresses, params, signature)
 }
 
 createNewPool().catch((error) => {
