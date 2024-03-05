@@ -5,6 +5,7 @@ import {
     ERC20Token
 } from "../typechain-types"
 import { ethers } from "hardhat"
+import { gasLimit, gasPrice } from "./utility/constants"
 
 console.log("Creating new pool")
 
@@ -30,10 +31,11 @@ async function createNewPool() {
         ethers.utils.arrayify(
             ethers.utils.solidityKeccak256(["address", "uint256", "uint256"], [tokenAddress, amount, nounce])))
     console.log(signature);
-    await token.approve(vaultManagerAddress, amount)
+    const tx = await token.approve(vaultManagerAddress, amount)
+    await tx.wait()
     const addresses = [toAddress, tokenAddress]
     const params = [amount]
-    await dealProvider.createNewPool(addresses, params, signature)
+    await dealProvider.createNewPool(addresses, params, signature, {gasLimit: gasLimit, gasPrice: gasPrice})
 }
 
 createNewPool().catch((error) => {
