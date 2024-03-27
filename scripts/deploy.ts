@@ -6,6 +6,8 @@ import {
     CollateralProvider,
     RefundProvider,
     VaultManager,
+    SimpleBuilder,
+    SimpleRefundBuilder,
     DelayVaultMigrator,
 } from "../typechain-types"
 import { v1DelayVault, POOLX } from "./utility/constants"
@@ -24,7 +26,7 @@ async function deployAllContracts(baseURI: string = "") {
     const lockProvider: LockDealProvider = await deploy("LockDealProvider", lockDealNFT.address, dealProvider.address)
 
     // Deploy TimedDealProvider contract
-    await deploy("TimedDealProvider", lockDealNFT.address, lockProvider.address)
+    const timedDealProvider: TimedDealProvider = await deploy("TimedDealProvider", lockDealNFT.address, lockProvider.address)
 
     // Deploy CollateralProvider contract
     const collateralProvider: CollateralProvider = await deploy(
@@ -41,8 +43,20 @@ async function deployAllContracts(baseURI: string = "") {
     )
 
     // Deploy Buiders
-    await deploy("SimpleBuilder", lockDealNFT.address)
-    await deploy("SimpleRefundBuilder", lockDealNFT.address, refundProvider.address, collateralProvider.address)
+    const simpleBuilder: SimpleBuilder = await deploy("SimpleBuilder", lockDealNFT.address)
+    const simpleRefundBuilder: SimpleRefundBuilder = await deploy("SimpleRefundBuilder", lockDealNFT.address, refundProvider.address, collateralProvider.address)
+    
+    let tx = await vaultManager.setTrustee(lockDealNFT.address)
+    await tx.wait()
+    await setApprovedContracts(lockDealNFT, [
+        dealProvider.address,
+        lockProvider.address,
+        timedDealProvider.address,
+        collateralProvider.address,
+        refundProvider.address,
+        simpleBuilder.address,
+        simpleRefundBuilder.address,
+    ])
 }
 
 const baseURI = process.env.BASEURI || ""
@@ -51,3 +65,10 @@ deployAllContracts(baseURI).catch((error) => {
     console.error(error)
     process.exitCode = 1
 })
+
+async function setApprovedContracts(lockDealNFT: LockDealNFT, contracts: string[]) {
+    for (const contract of contracts) {
+        const tx = await lockDealNFT.setApprovedContract(contract, true)
+        await tx.wait()
+    }
+}
