@@ -8,36 +8,42 @@ import {
     VaultManager,
     SimpleBuilder,
     SimpleRefundBuilder,
-    DelayVaultMigrator,
 } from "../typechain-types"
-import { v1DelayVault, POOLX } from "./utility/constants"
-import { deploy, delayVaultSettings } from "./utility/deployment"
+import {
+    lockDealNFTArtifact,
+    dealProviderArtifact,
+    lockProviderArtifact,
+    timedProviderArtifact,
+    collateralProviderArtifact,
+    refundProviderArtifact,
+} from "./utility/constants"
+import { deploy } from "./utility/deployment"
 
 async function deployAllContracts(baseURI: string = "") {
     const vaultManager: VaultManager = await deploy("VaultManager")
 
     // Deploy LockDealNFT contract
-    const lockDealNFT: LockDealNFT = await deploy("LockDealNFT", vaultManager.address, baseURI)
+    const lockDealNFT: LockDealNFT = await deploy(lockDealNFTArtifact, vaultManager.address, baseURI)
 
     // Deploy DealProvider contract
-    const dealProvider: DealProvider = await deploy("DealProvider", lockDealNFT.address)
+    const dealProvider: DealProvider = await deploy(dealProviderArtifact, lockDealNFT.address)
 
     // Deploy LockDealProvider contract
-    const lockProvider: LockDealProvider = await deploy("LockDealProvider", lockDealNFT.address, dealProvider.address)
+    const lockProvider: LockDealProvider = await deploy(lockProviderArtifact, lockDealNFT.address, dealProvider.address)
 
     // Deploy TimedDealProvider contract
-    const timedDealProvider: TimedDealProvider = await deploy("TimedDealProvider", lockDealNFT.address, lockProvider.address)
+    const timedDealProvider: TimedDealProvider = await deploy(timedProviderArtifact, lockDealNFT.address, lockProvider.address)
 
     // Deploy CollateralProvider contract
     const collateralProvider: CollateralProvider = await deploy(
-        "CollateralProvider",
+        collateralProviderArtifact,
         lockDealNFT.address,
         dealProvider.address
     )
 
     // Deploy RefundProvider contract
     const refundProvider: RefundProvider = await deploy(
-        "RefundProvider",
+        refundProviderArtifact,
         lockDealNFT.address,
         collateralProvider.address
     )

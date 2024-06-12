@@ -16,3 +16,10 @@ export const POOLX = "0xbAeA9aBA1454DF334943951d51116aE342eAB255"
 export const POOLXTestnet = "0xE14A2A1006B83F363569BC7b5b733191E919ca34"
 export const networkRPC = "https://bsc-testnet.publicnode.com"
 export const provider = new ethers.providers.JsonRpcProvider(networkRPC)
+// artifacts paths
+export const lockDealNFTArtifact = "contracts/LockDealNFT/contracts/LockDealNFT/LockDealNFT.sol:LockDealNFT"
+export const dealProviderArtifact = "contracts/LockDealNFT/contracts/SimpleProviders/DealProvider/DealProvider.sol:DealProvider"
+export const lockProviderArtifact = "contracts/LockDealNFT/contracts/SimpleProviders/LockProvider/LockDealProvider.sol:LockDealProvider"
+export const timedProviderArtifact = "contracts/LockDealNFT/contracts/SimpleProviders/TimedDealProvider/TimedDealProvider.sol:TimedDealProvider"
+export const collateralProviderArtifact = "contracts/LockDealNFT.CollateralProvider/contracts/CollateralProvider.sol:CollateralProvider"
+export const refundProviderArtifact = "contracts/LockDealNFT.RefundProvider/contracts/RefundProvider.sol:RefundProvider"

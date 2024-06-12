@@ -19,6 +19,7 @@ const config: HardhatUserConfig = {
     networks: {
         hardhat: {
             blockGasLimit: 130_000_000,
+            allowUnlimitedContractSize: true,
         },
         ropsten: {
             url: "https://ropsten.infura.io/v3/your-infura-project-id",

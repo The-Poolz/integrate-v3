@@ -11,6 +11,14 @@ import {
     CollateralProvider,
     ERC20Token,
 } from "../typechain-types"
+import {
+    lockDealNFTArtifact,
+    dealProviderArtifact,
+    lockProviderArtifact,
+    timedProviderArtifact,
+    collateralProviderArtifact,
+    refundProviderArtifact,
+} from "../scripts/utility/constants"
 import { time } from "@nomicfoundation/hardhat-network-helpers"
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers"
 import { deploy } from "../scripts/utility/deployment"
@@ -44,24 +52,28 @@ describe("Token Vault Id", function () {
     let user: Wallet
 
     before(async () => {
-        ;[receiver] = await ethers.getSigners()
+        [receiver] = await ethers.getSigners()
         user = receiver as unknown as Wallet
         vaultManager = (await deploy("VaultManager")) as VaultManager
-        lockDealNFT = (await deploy("LockDealNFT", vaultManager.address, "")) as LockDealNFT
-        dealProvider = (await deploy("DealProvider", lockDealNFT.address)) as DealProvider
-        lockProvider = (await deploy("LockDealProvider", lockDealNFT.address, dealProvider.address)) as LockDealProvider
+        lockDealNFT = (await deploy(lockDealNFTArtifact, vaultManager.address, "")) as LockDealNFT
+        dealProvider = (await deploy(dealProviderArtifact, lockDealNFT.address)) as DealProvider
+        lockProvider = (await deploy(
+            lockProviderArtifact,
+            lockDealNFT.address,
+            dealProvider.address
+        )) as LockDealProvider
         timedProvider = (await deploy(
-            "TimedDealProvider",
+            timedProviderArtifact,
             lockDealNFT.address,
             lockProvider.address
         )) as TimedDealProvider
         collateralProvider = (await deploy(
-            "CollateralProvider",
+            collateralProviderArtifact,
             lockDealNFT.address,
             dealProvider.address
         )) as CollateralProvider
         refundProvider = (await deploy(
-            "RefundProvider",
+            refundProviderArtifact,
             lockDealNFT.address,
             collateralProvider.address
         )) as RefundProvider

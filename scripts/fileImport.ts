@@ -10,7 +10,19 @@ async function downloadAndExtractZipAll() {
             await removeFolderRecursively(contractsFolder)
         }
         await downloadAndExtractZip(
-            "https://github.com/The-Poolz/LockDealNFT/archive/refs/tags/v0.9.6.zip",
+            "https://github.com/The-Poolz/LockDealNFT/archive/refs/tags/v1.0.1.zip",
+            contractsFolder
+        )
+        await downloadAndExtractZip(
+            "https://github.com/The-Poolz/LockDealNFT.Builders/archive/refs/tags/v1.2.1.zip",
+            contractsFolder
+        )
+        await downloadAndExtractZip(
+            "https://github.com/The-Poolz/LockDealNFT.CollateralProvider/archive/refs/tags/v1.0.1.zip",
+            contractsFolder
+        )
+        await downloadAndExtractZip(
+            "https://github.com/The-Poolz/LockDealNFT.RefundProvider/archive/refs/tags/v1.0.1.zip",
             contractsFolder
         )
         await downloadAndExtractZip(
@@ -19,6 +31,9 @@ async function downloadAndExtractZipAll() {
         )
         await cleanUpFolders("contracts/LockDealNFT")
         await cleanUpFolders("contracts/VaultManager")
+        await cleanUpFolders("contracts/LockDealNFT.Builders")
+        await cleanUpFolders("contracts/LockDealNFT.CollateralProvider")
+        await cleanUpFolders("contracts/LockDealNFT.RefundProvider")
     } catch (error) {
         console.error("An error occurred during download and compile:", error)
     }
