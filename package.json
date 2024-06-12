@@ -5,8 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "npx hardhat test",
-    "menu": "npx hardhat compile && .\\scripts\\separate-scripts.bat",
-    "testnet": "npx hardhat compile && npx ts-node ./scripts/testnet.ts"
+    "postinstall": "npx hardhat run ./scripts/fileImport.ts",
+    "menu": "npx hardhat run ./scripts/fileImport.ts && npx hardhat compile && .\\scripts\\separate-scripts.bat",
+    "testnet": "npx hardhat run ./scripts/fileImport.ts && npx hardhat compile && npx ts-node ./scripts/testnet.ts"
   },
   "license": "MIT",
   "devDependencies": {
