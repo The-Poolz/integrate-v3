@@ -11,7 +11,7 @@ const config: HardhatUserConfig = {
     solidity: {
         version: "0.8.24",
         settings: {
-            evmVersion: "byzantium",
+            evmVersion: "istanbul",
             optimizer: {
                 enabled: true,
                 runs: 200,
@@ -64,18 +64,6 @@ const config: HardhatUserConfig = {
             url: "https://mainnet.infura.io/v3/your-infura-project-id",
             accounts: [], // Replace with your mainnet accounts' private keys
         },
-    },
-    etherscan: {
-        apiKey: {
-            mainnet: process.env.ETHERSCAN_API_KEY || "",
-            bsc: process.env.BSCSCAN_API_KEY || "",
-            bscTestnet: process.env.BSCSCAN_API_KEY || "",
-        },
-    },
-    sourcify: {
-        // Disabled by default
-        // Doesn't need an API key
-        enabled: true,
     },
     gasReporter: {
         enabled: true,
