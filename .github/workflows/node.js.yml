@@ -4,36 +4,9 @@ on:
   pull_request:
 
 jobs:
-  Deploy-Test:
-    runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request' # This line ensures that this job only runs on pull requests
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+  setup:
+    uses: The-Poolz/solidity-workflows/.github/workflows/setup.yml@v0.4.0
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '18.15.0'
-
-      - name: Restore cache
-        id: restore-cache
-        uses: actions/cache/restore@v3
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-yarn-
-
-      - name: Install HardHat
-        if: steps.restore-cache.outputs.cache-hit != 'true'
-        run: npm i hardhat
-
-      - name: File Import
-        run: npx hardhat run ./scripts/fileImport.ts
-
-      - name: compile contracts
-        run: npx hardhat compile
-
-      - name: deployment and testing
-        run: npx hardhat test
+  test:
+    needs: setup
+    uses: The-Poolz/solidity-workflows/.github/workflows/gas-test.yml@v0.4.0

@@ -1,13 +1,15 @@
-import "@nomicfoundation/hardhat-toolbox"
+import { HardhatUserConfig } from "hardhat/config";
+import 'hardhat-gas-reporter';
+import '@typechain/hardhat';
+import 'solidity-coverage';
+import '@nomicfoundation/hardhat-network-helpers';
+import '@nomicfoundation/hardhat-chai-matchers';
 import "@truffle/dashboard-hardhat-plugin"
-import "hardhat-gas-reporter"
-import { HardhatUserConfig } from "hardhat/config"
-import "solidity-coverage"
 
 const config: HardhatUserConfig = {
     defaultNetwork: "hardhat",
     solidity: {
-        version: "0.8.19",
+        version: "0.8.24",
         settings: {
             evmVersion: "byzantium",
             optimizer: {
@@ -63,18 +65,32 @@ const config: HardhatUserConfig = {
             accounts: [], // Replace with your mainnet accounts' private keys
         },
     },
+    etherscan: {
+        apiKey: {
+            mainnet: process.env.ETHERSCAN_API_KEY || "",
+            bsc: process.env.BSCSCAN_API_KEY || "",
+            bscTestnet: process.env.BSCSCAN_API_KEY || "",
+        },
+    },
+    sourcify: {
+        // Disabled by default
+        // Doesn't need an API key
+        enabled: true,
+    },
     gasReporter: {
         enabled: true,
-        showTimeSpent: true,
         showMethodSig: true,
-        currency: "USD",
-        token: "BNB",
-        gasPriceApi:
-            "https://api.bscscan.com/api?module=proxy&action=eth_gasPrice&apikey=" + process.env.BSCSCAN_API_KEY,
-        coinmarketcap: process.env.CMC_API_KEY || "",
+        currency: 'USD',
+        token: 'BNB',
+        gasPriceApi: 'https://api.bscscan.com/api?module=proxy&action=eth_gasPrice&apikey=' + process.env.BSCSCAN_API_KEY,
+        coinmarketcap: process.env.CMC_API_KEY || '',
         noColors: true,
-        outputFile: "gas-report.txt",
-    },
+        reportFormat: "markdown",
+        outputFile: "gasReport.md",
+        forceTerminalOutput: true,
+        L1: "binance",
+        forceTerminalOutputFormat: "terminal"
+      },
 }
 
 export default config
