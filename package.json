@@ -48,7 +48,7 @@
   "dependencies": {
     "tsconfig-paths": "^4.2.0",
     "@openzeppelin/contracts": "^4.8.3",
-    "@poolzfinance/poolz-helper-v2": "^3.0.1",
+    "@poolzfinance/poolz-helper-v2": "^2.4.3",
     "@poolzfinance/collateral-provider": "^0.8.1",
     "@poolzfinance/lockdeal-nft": "^0.9.0",
     "@poolzfinance/refund-provider": "^0.8.0"
