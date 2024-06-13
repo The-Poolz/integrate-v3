@@ -4,9 +4,57 @@ on:
   pull_request:
 
 jobs:
-  setup:
-    uses: The-Poolz/solidity-workflows/.github/workflows/setup.yml@v0.4.0
+  Deploy-Test:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request' # This line ensures that this job only runs on pull requests
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-  test:
-    needs: setup
-    uses: The-Poolz/solidity-workflows/.github/workflows/gas-test.yml@v0.4.0
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20.9.0
+
+      - name: Restore cache
+        id: restore-cache
+        uses: actions/cache/restore@v3
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+
+      - name: Install HardHat
+        if: steps.restore-cache.outputs.cache-hit != 'true'
+        run: npm i hardhat
+
+      - name: File Import
+        run: npx hardhat run ./scripts/fileImport.ts
+
+      - name: compile contracts
+        run: npx hardhat compile
+
+      - name: Run tests
+        run: npx hardhat test
+        env:
+          BSCSCAN_API_KEY: ${{ secrets.BSCSCAN_API_KEY }}
+          CMC_API_KEY: ${{ secrets.CMC_API_KEY }}
+
+      - name: Check if gasReport.md exists
+        id: check_gas_report
+        run: |
+          if [ -f gasReport.md ]; then
+            echo "exists=true" >> $GITHUB_ENV
+          else
+            echo "exists=false" >> $GITHUB_ENV
+          fi
+
+      - name: Comment on pull request
+        if: github.event_name == 'pull_request' && env.exists == 'true'
+        uses: thollander/actions-comment-pull-request@v2
+        with:
+          filePath: gasReport.md
+          comment_tag: 'gas_report'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
