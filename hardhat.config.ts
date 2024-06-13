@@ -81,14 +81,14 @@ const config: HardhatUserConfig = {
         enabled: true,
         showMethodSig: true,
         currency: 'USD',
-        token: 'BNB',
-        gasPriceApi: 'https://api.bscscan.com/api?module=proxy&action=eth_gasPrice&apikey=' + process.env.BSCSCAN_API_KEY,
+        token: 'ETH',
+        gasPriceApi: 'https://api.bscscan.com/api?module=proxy&action=eth_gasPrice&apikey=' + process.env.ETHERSCAN_API_KEY,
         coinmarketcap: process.env.CMC_API_KEY || '',
         noColors: true,
         reportFormat: "markdown",
         outputFile: "gasReport.md",
         forceTerminalOutput: true,
-        L1: "binance",
+        L1: "ethereum",
         forceTerminalOutputFormat: "terminal"
       },
 }
