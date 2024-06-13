@@ -10,6 +10,7 @@ import {
     SimpleRefundBuilder,
     CollateralProvider,
     ERC20Token,
+    SimpleBuilder,
 } from "../typechain-types"
 import {
     lockDealNFTArtifact,
@@ -35,6 +36,7 @@ describe("Token Vault Id", function () {
     let collateralProvider: CollateralProvider
     let refundProvider: RefundProvider
     let simpleRefundBuilder: SimpleRefundBuilder
+    let simpleBuilder: SimpleBuilder
     let token: ERC20Token
     let mainCoin: ERC20Token
     let tempToken: ERC20Token
@@ -77,6 +79,7 @@ describe("Token Vault Id", function () {
             lockDealNFT.address,
             collateralProvider.address
         )) as RefundProvider
+        simpleBuilder = (await deploy("SimpleBuilder", lockDealNFT.address)) as SimpleBuilder
         token = (await deploy("ERC20Token", "Token", "TOKEN")) as ERC20Token
         mainCoin = (await deploy("ERC20Token", "MainCoin", "USDT")) as ERC20Token
         tempToken = (await deploy("ERC20Token", "Token1", "TOKEN1")) as ERC20Token
@@ -95,6 +98,7 @@ describe("Token Vault Id", function () {
         await lockDealNFT.setApprovedContract(collateralProvider.address, true)
         await lockDealNFT.setApprovedContract(refundProvider.address, true)
         await lockDealNFT.setApprovedContract(simpleRefundBuilder.address, true)
+        await lockDealNFT.setApprovedContract(simpleBuilder.address, true)
         await token.approve(vaultManager.address, amount.mul(100))
         await mainCoin.approve(vaultManager.address, amount.mul(100))
         await lockDealNFT.approvePoolTransfers(true)
