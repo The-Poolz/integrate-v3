@@ -82,7 +82,7 @@ const config: HardhatUserConfig = {
         showMethodSig: true,
         currency: 'USD',
         token: 'ETH',
-        gasPriceApi: 'https://api.bscscan.com/api?module=proxy&action=eth_gasPrice&apikey=' + process.env.ETHERSCAN_API_KEY,
+        gasPriceApi: 'https://api.etherscan.io/api?module=proxy&action=eth_gasPrice&apikey=' + process.env.ETHERSCAN_API_KEY,
         coinmarketcap: process.env.CMC_API_KEY || '',
         noColors: true,
         reportFormat: "markdown",
