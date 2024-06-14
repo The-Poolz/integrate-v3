@@ -3,19 +3,14 @@ import {
     DealProvider,
     LockDealProvider,
     TimedDealProvider,
-    CollateralProvider,
-    RefundProvider,
     VaultManager,
     SimpleBuilder,
-    SimpleRefundBuilder,
 } from "../typechain-types"
 import {
     lockDealNFTArtifact,
     dealProviderArtifact,
     lockProviderArtifact,
     timedProviderArtifact,
-    collateralProviderArtifact,
-    refundProviderArtifact,
 } from "./utility/constants"
 import { deploy } from "./utility/deployment"
 
@@ -32,36 +27,22 @@ async function deployAllContracts(baseURI: string = "") {
     const lockProvider: LockDealProvider = await deploy(lockProviderArtifact, lockDealNFT.address, dealProvider.address)
 
     // Deploy TimedDealProvider contract
-    const timedDealProvider: TimedDealProvider = await deploy(timedProviderArtifact, lockDealNFT.address, lockProvider.address)
-
-    // Deploy CollateralProvider contract
-    const collateralProvider: CollateralProvider = await deploy(
-        collateralProviderArtifact,
+    const timedDealProvider: TimedDealProvider = await deploy(
+        timedProviderArtifact,
         lockDealNFT.address,
-        dealProvider.address
-    )
-
-    // Deploy RefundProvider contract
-    const refundProvider: RefundProvider = await deploy(
-        refundProviderArtifact,
-        lockDealNFT.address,
-        collateralProvider.address
+        lockProvider.address
     )
 
     // Deploy Buiders
     const simpleBuilder: SimpleBuilder = await deploy("SimpleBuilder", lockDealNFT.address)
-    const simpleRefundBuilder: SimpleRefundBuilder = await deploy("SimpleRefundBuilder", lockDealNFT.address, refundProvider.address, collateralProvider.address)
-    
+
     let tx = await vaultManager.setTrustee(lockDealNFT.address)
     await tx.wait()
     await setApprovedContracts(lockDealNFT, [
         dealProvider.address,
         lockProvider.address,
         timedDealProvider.address,
-        collateralProvider.address,
-        refundProvider.address,
         simpleBuilder.address,
-        simpleRefundBuilder.address,
     ])
 }
 
