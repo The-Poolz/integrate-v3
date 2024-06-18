@@ -10,19 +10,19 @@ async function downloadAndExtractZipAll() {
             await removeFolderRecursively(contractsFolder)
         }
         await downloadAndExtractZip(
-            "https://github.com/The-Poolz/LockDealNFT/archive/refs/tags/v1.0.1.zip",
+            "https://github.com/The-Poolz/LockDealNFT/archive/refs/tags/v1.0.2.zip",
             contractsFolder
         )
         await downloadAndExtractZip(
-            "https://github.com/The-Poolz/LockDealNFT.Builders/archive/refs/tags/v1.2.1.zip",
+            "https://github.com/The-Poolz/LockDealNFT.Builders/archive/refs/tags/v1.2.2.zip",
             contractsFolder
         )
         await downloadAndExtractZip(
-            "https://github.com/The-Poolz/LockDealNFT.CollateralProvider/archive/refs/tags/v1.0.1.zip",
+            "https://github.com/The-Poolz/LockDealNFT.CollateralProvider/archive/refs/tags/v1.0.2.zip",
             contractsFolder
         )
         await downloadAndExtractZip(
-            "https://github.com/The-Poolz/LockDealNFT.RefundProvider/archive/refs/tags/v1.0.1.zip",
+            "https://github.com/The-Poolz/LockDealNFT.RefundProvider/archive/refs/tags/v1.0.2.zip",
             contractsFolder
         )
         await downloadAndExtractZip(

@@ -13,28 +13,33 @@ import {
     timedProviderArtifact,
 } from "./utility/constants"
 import { deploy } from "./utility/deployment"
+import { ethers } from "hardhat"
 
 async function deployAllContracts(baseURI: string = "") {
-    const vaultManager: VaultManager = await deploy("VaultManager")
+    const vaultManagerAddress: string = "0x9ff1dB30C66cD9d3311b4B22da49791610922b13"
+    const vaultManager = (await ethers.getContractAt("VaultManager", vaultManagerAddress)) as VaultManager
+    console.log("Deploying contracts...")
 
     // Deploy LockDealNFT contract
-    const lockDealNFT: LockDealNFT = await deploy(lockDealNFTArtifact, vaultManager.address, baseURI)
-
+    const lockDealNFT: LockDealNFT = await deploy(lockDealNFTArtifact, vaultManager, baseURI)
+    console.log("LockDealNFT deployed at:", lockDealNFT.address)
     // Deploy DealProvider contract
     const dealProvider: DealProvider = await deploy(dealProviderArtifact, lockDealNFT.address)
-
+    console.log("DealProvider deployed at:", dealProvider.address)
     // Deploy LockDealProvider contract
     const lockProvider: LockDealProvider = await deploy(lockProviderArtifact, lockDealNFT.address, dealProvider.address)
-
+    console.log("LockDealProvider deployed at:", lockProvider.address)
     // Deploy TimedDealProvider contract
     const timedDealProvider: TimedDealProvider = await deploy(
         timedProviderArtifact,
         lockDealNFT.address,
         lockProvider.address
     )
+    console.log("TimedDealProvider deployed at:", timedDealProvider.address)
 
     // Deploy Buiders
     const simpleBuilder: SimpleBuilder = await deploy("SimpleBuilder", lockDealNFT.address)
+    console.log("SimpleBuilder deployed at:", simpleBuilder.address)
 
     let tx = await vaultManager.setTrustee(lockDealNFT.address)
     await tx.wait()
