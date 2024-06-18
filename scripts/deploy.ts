@@ -5,18 +5,23 @@ import {
     TimedDealProvider,
     VaultManager,
     SimpleBuilder,
+    SimpleRefundBuilder,
+    CollateralProvider,
+    RefundProvider,
 } from "../typechain-types"
 import {
     lockDealNFTArtifact,
     dealProviderArtifact,
     lockProviderArtifact,
     timedProviderArtifact,
+    collateralProviderArtifact,
+    refundProviderArtifact,
 } from "./utility/constants"
 import { deploy } from "./utility/deployment"
 import { ethers } from "hardhat"
 
 async function deployAllContracts(baseURI: string = "") {
-    const vaultManagerAddress: string = "0x9ff1dB30C66cD9d3311b4B22da49791610922b13"
+    const vaultManagerAddress: string = "0x9ff1db30c66cd9d3311b4b22da49791610922b13"
     const vaultManager = (await ethers.getContractAt("VaultManager", vaultManagerAddress)) as VaultManager
     console.log("Deploying contracts...")
 
@@ -36,10 +41,33 @@ async function deployAllContracts(baseURI: string = "") {
         lockProvider.address
     )
     console.log("TimedDealProvider deployed at:", timedDealProvider.address)
+    // Deploy CollateralProvider contract
+    const collateralProvider: CollateralProvider = await deploy(
+        collateralProviderArtifact,
+        lockDealNFT.address,
+        dealProvider.address
+    )
+    console.log("CollateralProvider deployed at:", collateralProvider.address)
+
+    // Deploy RefundProvider contract
+    const refundProvider: RefundProvider = await deploy(
+        refundProviderArtifact,
+        lockDealNFT.address,
+        collateralProvider.address
+    )
+    console.log("RefundProvider deployed at:", refundProvider.address)
 
     // Deploy Buiders
     const simpleBuilder: SimpleBuilder = await deploy("SimpleBuilder", lockDealNFT.address)
     console.log("SimpleBuilder deployed at:", simpleBuilder.address)
+
+    const simpleRefundBuilder: SimpleRefundBuilder = await deploy(
+        "SimpleRefundBuilder",
+        lockDealNFT.address,
+        refundProvider.address,
+        collateralProvider.address
+    )
+    console.log("SimpleRefundBuilder deployed at:", simpleRefundBuilder.address)
 
     let tx = await vaultManager.setTrustee(lockDealNFT.address)
     await tx.wait()
@@ -47,7 +75,10 @@ async function deployAllContracts(baseURI: string = "") {
         dealProvider.address,
         lockProvider.address,
         timedDealProvider.address,
+        collateralProvider.address,
+        refundProvider.address,
         simpleBuilder.address,
+        simpleRefundBuilder.address,
     ])
 }
 
