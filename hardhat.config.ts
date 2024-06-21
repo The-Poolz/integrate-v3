@@ -1,13 +1,16 @@
-import "@nomicfoundation/hardhat-toolbox"
 import "@truffle/dashboard-hardhat-plugin"
 import "hardhat-gas-reporter"
 import { HardhatUserConfig } from "hardhat/config"
 import "solidity-coverage"
+import "hardhat-dependency-compiler"
+import '@typechain/hardhat';
+import '@nomicfoundation/hardhat-network-helpers';
+import '@nomicfoundation/hardhat-chai-matchers';
 
 const config: HardhatUserConfig = {
     defaultNetwork: "hardhat",
     solidity: {
-        version: "0.8.19",
+        version: "0.8.24",
         settings: {
             evmVersion: "byzantium",
             optimizer: {
@@ -18,6 +21,7 @@ const config: HardhatUserConfig = {
     },
     networks: {
         hardhat: {
+            allowUnlimitedContractSize: true,
             blockGasLimit: 130_000_000,
         },
         ropsten: {
@@ -64,16 +68,32 @@ const config: HardhatUserConfig = {
     },
     gasReporter: {
         enabled: true,
-        showTimeSpent: true,
         showMethodSig: true,
-        currency: "USD",
-        token: "BNB",
-        gasPriceApi:
-            "https://api.bscscan.com/api?module=proxy&action=eth_gasPrice&apikey=" + process.env.BSCSCAN_API_KEY,
-        coinmarketcap: process.env.CMC_API_KEY || "",
+        currency: 'USD',
+        token: 'ETH',
+        gasPriceApi: 'https://api.etherscan.io/api?module=proxy&action=eth_gasPrice&apikey=' + process.env.ETHERSCAN_API_KEY,
+        coinmarketcap: process.env.CMC_API_KEY || '',
         noColors: true,
-        outputFile: "gas-report.txt",
+        reportFormat: "markdown",
+        outputFile: "gasReport.md",
+        forceTerminalOutput: true,
+        L1: "ethereum",
+        forceTerminalOutputFormat: "terminal"
     },
+    dependencyCompiler: {
+        paths: [
+          '@poolzfinance/collateral-provider/contracts/CollateralProvider.sol',
+          '@poolzfinance/refund-provider/contracts/RefundProvider.sol',
+          '@poolzfinance/lockdeal-nft/contracts/LockDealNFT/LockDealNFT.sol',
+          '@poolzfinance/lockdeal-nft/contracts/SimpleProviders/DealProvider/DealProvider.sol',
+          '@poolzfinance/lockdeal-nft/contracts/SimpleProviders/LockProvider/LockDealProvider.sol',
+          '@poolzfinance/lockdeal-nft/contracts/SimpleProviders/TimedDealProvider/TimedDealProvider.sol',
+          '@poolzfinance/builders/contracts/SimpleBuilder/SimpleBuilder.sol',
+          '@poolzfinance/builders/contracts/SimpleRefundBuilder/SimpleRefundBuilder.sol',
+          '@poolzfinance/vault-manager/contracts/VaultManager/VaultManager.sol',
+          '@poolzfinance/vault-manager/contracts/test/ERC20Token.sol'
+        ],
+      }
 }
 
 export default config
