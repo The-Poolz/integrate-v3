@@ -14,10 +14,6 @@ npm run menu
 ## Truffle dashboard deployment
 
 ```console
-npx hardhat run ./scripts/fileImport.ts
-```
-
-```console
 truffle dashboard
 ```
 
