@@ -91,7 +91,11 @@ const config: HardhatUserConfig = {
           '@poolzfinance/builders/contracts/SimpleBuilder/SimpleBuilder.sol',
           '@poolzfinance/builders/contracts/SimpleRefundBuilder/SimpleRefundBuilder.sol',
           '@poolzfinance/vault-manager/contracts/VaultManager/VaultManager.sol',
-          '@poolzfinance/vault-manager/contracts/test/ERC20Token.sol'
+          '@poolzfinance/vault-manager/contracts/test/ERC20Token.sol',
+          '@poolzfinance/dispenser-provider/contracts/DispenserProvider.sol',
+          '@poolzfinance/invest-provider/contracts/InvestProvider.sol',
+          '@poolzfinance/whitelist/contracts/WhiteList.sol',
+          '@poolzfinance/whitelist-router/contracts/WhiteListRouter.sol',
         ],
       }
 }

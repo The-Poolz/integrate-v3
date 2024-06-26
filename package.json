@@ -56,12 +56,16 @@
   },
   "dependencies": {
     "@ironblocks/firewall-consumer": "^1.0.13",
-    "@openzeppelin/contracts": "^4.8.3",
+    "@openzeppelin/contracts": "^5.0.2",
     "@poolzfinance/builders": "1.2.2",
-    "@poolzfinance/collateral-provider": "^0.8.1",
-    "@poolzfinance/lockdeal-nft": "^1.0.2",
-    "@poolzfinance/poolz-helper-v2": "^2.4.3",
-    "@poolzfinance/refund-provider": "^0.8.0",
+    "@poolzfinance/collateral-provider": "^1.0.3",
+    "@poolzfinance/lockdeal-nft": "^1.0.4",
+    "@poolzfinance/whitelist": "^1.0.0",
+    "@poolzfinance/whitelist-router": "^1.0.0",
+    "@poolzfinance/invest-provider": "^1.0.0",
+    "@poolzfinance/dispenser-provider": "^1.0.0",
+    "@poolzfinance/poolz-helper-v2": "^3.0.0",
+    "@poolzfinance/refund-provider": "^1.0.3",
     "@poolzfinance/vault-manager": "0.0.4-ironblocks"
   }
 }
