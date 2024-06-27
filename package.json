@@ -66,6 +66,6 @@
     "@poolzfinance/dispenser-provider": "^1.0.0",
     "@poolzfinance/poolz-helper-v2": "^3.0.0",
     "@poolzfinance/refund-provider": "^1.0.3",
-    "@poolzfinance/vault-manager": "0.0.4-ironblocks"
+    "@poolzfinance/vault-manager": "^1.0.0"
   }
 }
