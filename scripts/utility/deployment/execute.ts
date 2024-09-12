@@ -69,3 +69,8 @@ export async function deployAllContracts() {
     process.env.BASEURI = await getBaseURI();
     await executeScript("AllContracts", "scripts/deploy.ts");
 }
+
+export async function deployMoonbeam() {
+    process.env.BASEURI = await getBaseURI();
+    await executeScript("Moonbeam", "scripts/moonbeam.ts");
+}
