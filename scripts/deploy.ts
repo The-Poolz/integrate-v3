@@ -7,11 +7,9 @@ import {
     RefundProvider,
     VaultManager,
     SimpleBuilder,
-    SimpleRefundBuilder,
-    DelayVaultMigrator,
+    SimpleRefundBuilder
 } from "../typechain-types"
-import { v1DelayVault, POOLX } from "./utility/constants"
-import { deploy, delayVaultSettings } from "./utility/deployment"
+import { deploy } from "./utility/deployment"
 
 async function deployAllContracts(baseURI: string = "") {
     const vaultManager: VaultManager = await deploy("VaultManager")

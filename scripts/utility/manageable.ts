@@ -1,5 +1,5 @@
 import { Wallet, constants } from "ethers"
-import { ERC20Token, LockDealNFT, VaultManager, IDelayVaultProvider } from "../../typechain-types"
+import { ERC20Token, LockDealNFT, VaultManager } from "../../typechain-types"
 import { gasLimit, gasPrice } from "./constants"
 
 async function setTrustee(vaultManager: VaultManager, user: Wallet, address: string) {

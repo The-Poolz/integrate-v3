@@ -1,5 +1,4 @@
-// inquirerPrompts.js
-const inquirer = require("inquirer")
+const { input, select } = require("@inquirer/prompts")
 
 async function promptUser(
     message: string,
@@ -8,16 +7,16 @@ async function promptUser(
     choices: { name: string }[] = [],
     defaultValue = ""
 ) {
-    const answer = await inquirer.prompt([
-        {
-            type,
-            name,
+    let answer
+    if (type === "input") {
+        answer = await input({ message, default: defaultValue })
+    } else if (type === "select") {
+        answer = await select({
             message,
-            choices,
-            default: defaultValue,
-        },
-    ])
-    return answer[name]
+            choices: choices.map((choice) => ({ name: choice.name, value: choice.name })),
+        })
+    }
+    return answer
 }
 
 async function getBaseURI() {
@@ -41,7 +40,7 @@ async function getCollateralProviderAddress() {
 }
 
 async function getMenu(menuItems: { name: string }[]) {
-    return await promptUser("Choose a menu item:\n", "menuItem", "list", menuItems)
+    return await promptUser("Choose a menu item:", "menuItem", "select", menuItems)
 }
 
 async function getOldDelay() {
