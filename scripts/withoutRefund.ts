@@ -8,7 +8,7 @@ import {
 } from "../typechain-types"
 import { deploy } from "./utility/deployment"
 
-async function deployMoonbeamContracts(baseURI: string = "") {
+async function deployAllContractsWithoutRefund(baseURI: string = "") {
     const vaultManager: VaultManager = await deploy("VaultManager")
 
     // Deploy LockDealNFT contract
@@ -38,7 +38,7 @@ async function deployMoonbeamContracts(baseURI: string = "") {
 
 const baseURI = process.env.BASEURI || ""
 
-deployMoonbeamContracts(baseURI).catch((error) => {
+deployAllContractsWithoutRefund(baseURI).catch((error) => {
     console.error(error)
     process.exitCode = 1
 })

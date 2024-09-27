@@ -8,11 +8,11 @@ import {
     deployAllContracts,
     deployLightMigrator,
     deployDelayProviderAndMigrator,
-    deployMoonbeam
+    deployWithoutRefund
 } from "./utility/deployment/execute"
 
 const scriptPaths = [
-    "Moonbeam.ts",
+    "withoutRefund.ts",
     "VaultAndLockDealNFT.ts",
     "SimpleProviders.ts",
     "RefundProvider.ts",
@@ -39,7 +39,7 @@ async function displayMenu() {
                     await deployAllContracts()
                     break
                 case menuItems[1].name:
-                    await deployMoonbeam()
+                    await deployWithoutRefund()
                     break
                 case menuItems[2].name:
                     await deployVaultAndLockDealNFT()
