@@ -10,7 +10,7 @@ import '@nomicfoundation/hardhat-chai-matchers';
 const config: HardhatUserConfig = {
     defaultNetwork: "hardhat",
     solidity: {
-        version: "0.8.24",
+        version: "0.8.26",
         settings: {
             evmVersion: 'istanbul',
             optimizer: {

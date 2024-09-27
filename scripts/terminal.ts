@@ -8,16 +8,18 @@ import {
     deployAllContracts,
     deployLightMigrator,
     deployDelayProviderAndMigrator,
+    deployWithoutRefund
 } from "./utility/deployment/execute"
 
 const scriptPaths = [
+    "withoutRefund.ts",
     "VaultAndLockDealNFT.ts",
     "SimpleProviders.ts",
     "RefundProvider.ts",
     "RefundAndCollateral.ts",
     "Builders.ts",
     "LightMigrator.ts",
-    "DelayVaultProvider.ts",
+    "DelayVaultProvider.ts"
 ]
 
 const menuItems = [
@@ -37,24 +39,27 @@ async function displayMenu() {
                     await deployAllContracts()
                     break
                 case menuItems[1].name:
-                    await deployVaultAndLockDealNFT()
+                    await deployWithoutRefund()
                     break
                 case menuItems[2].name:
-                    await deploySimpleProviders()
+                    await deployVaultAndLockDealNFT()
                     break
                 case menuItems[3].name:
-                    await deployRefundProvider()
+                    await deploySimpleProviders()
                     break
                 case menuItems[4].name:
-                    await deployRefundAndCollateral()
+                    await deployRefundProvider()
                     break
                 case menuItems[5].name:
-                    await deployBuilders()
+                    await deployRefundAndCollateral()
                     break
                 case menuItems[6].name:
-                    await deployLightMigrator()
+                    await deployBuilders()
                     break
                 case menuItems[7].name:
+                    await deployLightMigrator()
+                    break
+                case menuItems[8].name:
                     await deployDelayProviderAndMigrator()
                     break
                 default:
