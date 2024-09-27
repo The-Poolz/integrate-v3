@@ -1,9 +1,14 @@
+import { utils, Wallet, ContractFactory } from "ethers"
 import { ethers } from "hardhat"
-import { gasLimit, gasPrice } from "./constants"
-import { utils, Wallet } from "ethers"
 
 export const deploy = async <T>(contractName: string, ...args: any[]): Promise<T> => {
-    const Contract = await ethers.getContractFactory(contractName)
+    const Contract: ContractFactory = await ethers.getContractFactory(contractName)
+    console.log(`Deploying ${contractName}...`)
+    const unsignedTx = Contract.getDeployTransaction(...args)
+    const gasLimit = await ethers.provider.estimateGas(unsignedTx)
+    console.log(`Gas limit for ${contractName}: ${gasLimit}`)
+    const gasPrice = await ethers.provider.getGasPrice()
+    console.log(`Gas price: ${gasPrice.toString()}`)
     const contract = await Contract.deploy(...args, { gasLimit, gasPrice })
     console.log(`${contractName} deployed at: ${contract.address}`)
     return contract.deployed() as Promise<T>
