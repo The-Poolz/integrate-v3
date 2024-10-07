@@ -1,26 +1,13 @@
-import { utils, Wallet, ContractFactory } from "ethers"
 import { TransactionRequest } from "@ethersproject/abstract-provider"
+import { utils, Wallet, ContractFactory } from "ethers"
 import { ethers } from "hardhat"
 
-// Function to get gas data (limit, price, and priority fee)
-export const getGasData = async (unsignedTx: TransactionRequest, maxBaseFee?: number, maxPriorityFee?: number) => {
-    const gasLimit = await ethers.provider.estimateGas(unsignedTx)
-    console.log(`Gas limit: ${gasLimit}`)
-
-    // Get the current gas price
-    const gasPrice = await ethers.provider.getGasPrice()
-    console.log(`Gas price: ${gasPrice.toString()}`)
-
-    // Optionally, get the current fee data
-    const feeData = await ethers.provider.getFeeData()
-    const priorityFee = maxPriorityFee !== undefined
-            ? utils.parseUnits(maxPriorityFee.toString(), "gwei")
-            : feeData.maxPriorityFeePerGas || 0 // Fallback if undefined
-    const baseFee = maxBaseFee !== undefined ? utils.parseUnits(maxBaseFee.toString(), "gwei") : feeData.maxFeePerGas || gasPrice // Fallback if undefined
-    console.log(`Priority fee: ${priorityFee.toString()}`)
-    console.log(`Max base fee: ${baseFee.toString()}`)
-
-    return { gasLimit, gasPrice, priorityFee, baseFee }
+export const getGasData = async (unsignedTx: TransactionRequest) => {
+    let gasLimit = await ethers.provider.estimateGas(unsignedTx)
+    let gasPrice = await ethers.provider.getGasPrice()
+    // add 10% to the gas price
+    gasPrice = gasPrice.add(gasPrice.div(10))
+    return { gasLimit, gasPrice }
 }
 
 export const deploy = async <T>(contractName: string, ...args: any[]): Promise<T> => {
@@ -28,11 +15,10 @@ export const deploy = async <T>(contractName: string, ...args: any[]): Promise<T
     console.log(`Deploying ${contractName}...`)
     const unsignedTx = Contract.getDeployTransaction(...args)
     // Fetch gas data
-    const { gasLimit, gasPrice, priorityFee, baseFee } = await getGasData(unsignedTx)
-    const totalGasPrice = baseFee.add(priorityFee) // Sum base fee and priority fee
+    const { gasLimit, gasPrice } = await getGasData(unsignedTx)
     const contract = await Contract.deploy(...args, {
         gasLimit: gasLimit,
-        gasPrice: totalGasPrice,
+        maxFeePerGas: gasPrice,
     })
     console.log(`${contractName} deployed at: ${contract.address}`)
     return contract.deployed() as Promise<T>
@@ -43,12 +29,11 @@ export async function deployFrom<T>(contractName: string, user: Wallet, ...args:
     console.log(`Deploying ${contractName}...`)
     const unsignedTx = Contract.getDeployTransaction(...args)
     // Fetch gas data
-    const { gasLimit, gasPrice, priorityFee, baseFee } = await getGasData(unsignedTx)
-    const totalGasPrice = baseFee.add(priorityFee) // Sum base fee and priority fee
+    const { gasLimit, gasPrice } = await getGasData(unsignedTx)
     // Deploy with the user's wallet and gas settings
     const contract = await Contract.connect(user).deploy(...args, {
         gasLimit: gasLimit,
-        gasPrice: totalGasPrice,
+        maxFeePerGas: gasPrice,
     })
     return contract.deployed() as Promise<T>
 }
