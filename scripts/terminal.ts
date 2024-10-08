@@ -10,10 +10,6 @@ import {
     deployWithoutRefund,
 } from "./utility/deployment/execute"
 import { getMenu } from "./utility/deployment/input"
-import axios from "axios"
-import dotenv from "dotenv"
-
-dotenv.config()
 
 // Define deployment scripts
 const scriptPaths = [
@@ -34,37 +30,6 @@ const menuItems = [
     { name: "Open and Submit GitHub Issue" }, // Combined menu item for opening and submitting an issue
 ]
 
-// GitHub API details
-const GITHUB_API_URL = "https://api.github.com/repos/The-Poolz/PoolzReactHelper/issues"
-
-async function openAndSubmitGitHubIssue(title: string, body: string) {
-    try {
-        // Submit the issue via the GitHub API
-        const response = await axios.post(
-            GITHUB_API_URL,
-            {
-                title: title,
-                body: body,
-            },
-            {
-                headers: {
-                    Authorization: `token ${process.env.GITHUB_TOKEN}`,
-                    "Content-Type": "application/json",
-                },
-            }
-        )
-        console.log(`Issue created successfully: ${response.data.html_url}`)
-    } catch (error) {
-        if (axios.isAxiosError(error)) {
-            console.error(`Error creating GitHub issue: ${error.response?.data.message}`)
-        } else if (error instanceof Error) {
-            console.error(`Error creating GitHub issue: ${error.message}`)
-        } else {
-            console.error(`Unknown error occurred: ${JSON.stringify(error)}`)
-        }
-    }
-}
-
 // Map menu item names to deployment functions for cleaner handling
 const deploymentActions: { [key: string]: () => Promise<void> } = {
     "Deploy All contracts": deployAllContracts,
@@ -75,10 +40,7 @@ const deploymentActions: { [key: string]: () => Promise<void> } = {
     "Deploy RefundAndCollateral": deployRefundAndCollateral,
     "Deploy Builders": deployBuilders,
     "Deploy LightMigrator": deployLightMigrator,
-    "Deploy DelayVaultProvider": deployDelayProviderAndMigrator,
-    "Open and Submit GitHub Issue": async () => {
-        await openAndSubmitGitHubIssue("test", "This is a test issue created by the deployment script.")
-    },
+    "Deploy DelayVaultProvider": deployDelayProviderAndMigrator
 }
 
 async function displayMenu() {
