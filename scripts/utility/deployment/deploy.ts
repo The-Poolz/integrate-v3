@@ -3,12 +3,15 @@ import {
     DealProvider,
     LockDealProvider,
     TimedDealProvider,
+    CollateralProvider,
+    RefundProvider,
     VaultManager,
-    SimpleBuilder
-} from "../typechain-types"
-import { deploy } from "./utility/deployment"
+    SimpleBuilder,
+    SimpleRefundBuilder
+} from "../../../typechain-types"
+import { deploy } from "../deployment"
 
-async function deployAllContractsWithoutRefund(baseURI: string = "") {
+async function deployAllContracts(baseURI: string = "") {
     const vaultManager: VaultManager = await deploy("VaultManager")
 
     // Deploy LockDealNFT contract
@@ -23,22 +26,40 @@ async function deployAllContractsWithoutRefund(baseURI: string = "") {
     // Deploy TimedDealProvider contract
     const timedDealProvider: TimedDealProvider = await deploy("TimedDealProvider", lockDealNFT.address, lockProvider.address)
 
+    // Deploy CollateralProvider contract
+    const collateralProvider: CollateralProvider = await deploy(
+        "CollateralProvider",
+        lockDealNFT.address,
+        dealProvider.address
+    )
+
+    // Deploy RefundProvider contract
+    const refundProvider: RefundProvider = await deploy(
+        "RefundProvider",
+        lockDealNFT.address,
+        collateralProvider.address
+    )
+
     // Deploy Buiders
     const simpleBuilder: SimpleBuilder = await deploy("SimpleBuilder", lockDealNFT.address)
-
+    const simpleRefundBuilder: SimpleRefundBuilder = await deploy("SimpleRefundBuilder", lockDealNFT.address, refundProvider.address, collateralProvider.address)
+    
     let tx = await vaultManager.setTrustee(lockDealNFT.address)
     await tx.wait()
     await setApprovedContracts(lockDealNFT, [
         dealProvider.address,
         lockProvider.address,
         timedDealProvider.address,
-        simpleBuilder.address
+        collateralProvider.address,
+        refundProvider.address,
+        simpleBuilder.address,
+        simpleRefundBuilder.address,
     ])
 }
 
 const baseURI = process.env.BASEURI || ""
 
-deployAllContractsWithoutRefund(baseURI).catch((error) => {
+deployAllContracts(baseURI).catch((error) => {
     console.error(error)
     process.exitCode = 1
 })

@@ -1,6 +1,7 @@
-
 import axios from "axios"
 import dotenv from "dotenv"
+
+const { select } = require("@inquirer/prompts")
 
 dotenv.config()
 
@@ -33,4 +34,14 @@ export async function openAndSubmitGitHubIssue(title: string, body: string) {
             console.error(`Unknown error occurred: ${JSON.stringify(error)}`)
         }
     }
+}
+
+export async function askYesNoQuestion(question: string): Promise<boolean> {
+    return await select({
+        message: question,
+        choices: [
+            { name: "Yes", value: true },
+            { name: "No", value: false },
+        ],
+    })
 }
