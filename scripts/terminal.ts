@@ -31,7 +31,7 @@ const menuItems = [
 ]
 
 // Map menu item names to deployment functions for cleaner handling
-const deploymentActions: { [key: string]: () => Promise<void> } = {
+const deploymentActions: { [key: string]: () => Promise<any> } = {
     "Deploy All contracts": deployAllContracts,
     "Deploy withoutRefund": deployWithoutRefund,
     "Deploy VaultAndLockDealNFT": deployVaultAndLockDealNFT,
@@ -52,20 +52,22 @@ async function displayMenu() {
             const answer = await getMenu(menuItems)
 
             if (deploymentActions[answer]) {
-                await deploymentActions[answer]()
-
+                // Capture the deployment addresses
+                const deploymentData = await deploymentActions[answer]()
+                //console.log("data", deploymentData)
                 // Ask if the user wants to create an issue with deployment data
                 const openIssue = await askYesNoQuestion("Do you want to open an issue with deployment data?")
 
                 if (openIssue) {
-                    await openAndSubmitGitHubIssue("test", "This is a test issue created by the deployment script")
+                    // Prepare the issue body with the deployment data
+                    const issueBody = `This issue is created by the deployment script. The following contracts were deployed successfully:\n\n${deploymentData.map((address: string) => `- ${address}`).join("\n")}`
+                    await openAndSubmitGitHubIssue("test issue", issueBody)
                     console.log("Issue created successfully.")
                 } else {
                     console.log("Issue creation skipped.")
                 }
             } else {
                 console.log("Exiting the menu. Thank you!")
-                keepMenuOpen = false
             }
         } catch (error) {
             console.error(`Error executing command: ${error}`)
