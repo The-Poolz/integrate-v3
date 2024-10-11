@@ -12,7 +12,6 @@ export const getGasData = async (unsignedTx: TransactionRequest) => {
 
 export const deploy = async <T>(contractName: string, ...args: any[]): Promise<T> => {
     const Contract: ContractFactory = await ethers.getContractFactory(contractName)
-    console.log(`Deploying ${contractName}...`)
     const unsignedTx = Contract.getDeployTransaction(...args)
     // Fetch gas data
     const { gasLimit, gasPrice } = await getGasData(unsignedTx)
@@ -26,7 +25,6 @@ export const deploy = async <T>(contractName: string, ...args: any[]): Promise<T
 
 export async function deployFrom<T>(contractName: string, user: Wallet, ...args: any[]): Promise<T> {
     const Contract = await ethers.getContractFactory(contractName, user)
-    console.log(`Deploying ${contractName}...`)
     const unsignedTx = Contract.getDeployTransaction(...args)
     // Fetch gas data
     const { gasLimit, gasPrice } = await getGasData(unsignedTx)
