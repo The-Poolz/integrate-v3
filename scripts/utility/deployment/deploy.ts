@@ -9,7 +9,7 @@ import {
     SimpleBuilder,
     SimpleRefundBuilder
 } from "../typechain-types"
-import { deploy } from "./utility/deployment"
+import { deploy } from "../deployment"
 
 async function deployAllContracts(baseURI: string = "") {
     const vaultManager: VaultManager = await deploy("VaultManager")

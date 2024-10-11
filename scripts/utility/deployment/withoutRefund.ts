@@ -5,8 +5,8 @@ import {
     TimedDealProvider,
     VaultManager,
     SimpleBuilder
-} from "../typechain-types"
-import { deploy } from "./utility/deployment"
+} from "../../../typechain-types"
+import { deploy } from "../deployment"
 
 async function deployAllContractsWithoutRefund(baseURI: string = "") {
     const vaultManager: VaultManager = await deploy("VaultManager")
