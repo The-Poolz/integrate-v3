@@ -59,14 +59,10 @@
     "@ironblocks/firewall-consumer": "^1.0.13",
     "@openzeppelin/contracts": "^5.0.2",
     "@poolzfinance/builders": "1.2.2",
-    "@poolzfinance/collateral-provider": "^1.0.3",
-    "@poolzfinance/dispenser-provider": "^1.0.0",
-    "@poolzfinance/invest-provider": "^1.0.0",
+    "@poolzfinance/dispenser-provider": "^1.0.3",
+    "@poolzfinance/invest-provider": "^1.0.1",
     "@poolzfinance/lockdeal-nft": "^1.0.4",
     "@poolzfinance/poolz-helper-v2": "^3.0.0",
-    "@poolzfinance/refund-provider": "^1.0.3",
-    "@poolzfinance/vault-manager": "^1.0.0",
-    "@poolzfinance/whitelist": "^1.0.0",
-    "@poolzfinance/whitelist-router": "^1.0.0"
+    "@poolzfinance/vault-manager": "^1.0.0"
   }
 }

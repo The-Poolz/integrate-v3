@@ -3,11 +3,9 @@ import {
     DealProvider,
     LockDealProvider,
     TimedDealProvider,
-    CollateralProvider,
-    RefundProvider,
     VaultManager,
     SimpleBuilder,
-    SimpleRefundBuilder
+    DispenserProvider
 } from "../typechain-types"
 import { deploy } from "./utility/deployment"
 
@@ -26,23 +24,11 @@ async function deployAllContracts(baseURI: string = "") {
     // Deploy TimedDealProvider contract
     const timedDealProvider: TimedDealProvider = await deploy("TimedDealProvider", lockDealNFT.address, lockProvider.address)
 
-    // Deploy CollateralProvider contract
-    const collateralProvider: CollateralProvider = await deploy(
-        "CollateralProvider",
-        lockDealNFT.address,
-        dealProvider.address
-    )
-
-    // Deploy RefundProvider contract
-    const refundProvider: RefundProvider = await deploy(
-        "RefundProvider",
-        lockDealNFT.address,
-        collateralProvider.address
-    )
-
     // Deploy Buiders
     const simpleBuilder: SimpleBuilder = await deploy("SimpleBuilder", lockDealNFT.address)
-    const simpleRefundBuilder: SimpleRefundBuilder = await deploy("SimpleRefundBuilder", lockDealNFT.address, refundProvider.address, collateralProvider.address)
+
+    // Deploy DispenserProvider
+    const dispenserProvider: DispenserProvider = await deploy("DispenserProvider", lockDealNFT.address)
     
     let tx = await vaultManager.setTrustee(lockDealNFT.address)
     await tx.wait()
@@ -50,10 +36,8 @@ async function deployAllContracts(baseURI: string = "") {
         dealProvider.address,
         lockProvider.address,
         timedDealProvider.address,
-        collateralProvider.address,
-        refundProvider.address,
         simpleBuilder.address,
-        simpleRefundBuilder.address,
+        dispenserProvider.address
     ])
 }
 

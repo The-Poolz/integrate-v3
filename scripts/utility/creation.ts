@@ -2,13 +2,12 @@ import {
     DealProvider,
     LockDealProvider,
     TimedDealProvider,
-    RefundProvider,
     VaultManager,
     ERC20Token,
 } from "../../typechain-types"
 import { Wallet, BigNumber } from "ethers"
 import { ethers } from "hardhat"
-import { gasLimit, gasPrice, startTime, finishTime, amount } from "./constants"
+import { gasLimit, gasPrice, amount } from "./constants"
 
 async function createSimpleNFT(
     user: Wallet,
@@ -30,25 +29,6 @@ async function createSimpleNFT(
     console.log(name + ` NFT created`)
 }
 
-async function createRefundNFT(
-    user: Wallet,
-    refundProvider: RefundProvider,
-    provider: DealProvider | LockDealProvider | TimedDealProvider,
-    vaultManager: VaultManager,
-    token: ERC20Token,
-    mainCoin: ERC20Token
-) {
-    const name = await refundProvider.name()
-    const tokenSignature = await getSignature(user, vaultManager, token, token.address)
-    const mainCoinsignature = await getSignature(user, vaultManager, token, mainCoin.address)
-    const addresses = [user.address, token.address, mainCoin.address, provider.address]
-    const params = [amount, startTime, finishTime, amount, finishTime]
-    const tx = await refundProvider
-        .connect(user)
-        .createNewRefundPool(addresses, params, tokenSignature, mainCoinsignature, { gasLimit, gasPrice })
-    await tx.wait()
-    console.log(name + ` NFT created`)
-}
 
 async function getSignature(
     user: Wallet,
@@ -66,4 +46,4 @@ async function getSignature(
     return await user.signMessage(ethers.utils.arrayify(hash))
 }
 
-export { createSimpleNFT, createRefundNFT, getSignature }
+export { createSimpleNFT, getSignature }

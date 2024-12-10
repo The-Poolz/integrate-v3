@@ -1,16 +1,7 @@
 // scriptDeployer.js
 import { exec } from "child_process";
 import util from "util";
-import {
-    getBaseURI,
-    getLockDealNFTAddress,
-    getCollateralProviderAddress,
-    getDealProviderAddress,
-    getLockProviderAddress,
-    getOldDelay,
-    getNewDelay,
-    getRefundProviderAddress,
-} from "./input";
+import { getBaseURI, getLockDealNFTAddress, getLockProviderAddress, getOldDelay, getNewDelay } from "./input";
 
 const execAsync = util.promisify(exec);
 
@@ -32,18 +23,6 @@ export async function deploySimpleProviders() {
     await executeScript("SimpleProviders", "scripts/utility/deployment/SimpleProviders.ts");
 }
 
-export async function deployRefundProvider() {
-    process.env.LOCK_DEAL_NFT_ADDRESS = await getLockDealNFTAddress();
-    process.env.COLLATERAL = await getCollateralProviderAddress();
-    await executeScript("RefundProvider", "scripts/utility/deployment/RefundProvider.ts");
-}
-
-export async function deployRefundAndCollateral() {
-    process.env.LOCK_DEAL_NFT_ADDRESS = await getLockDealNFTAddress();
-    process.env.PROVIDER_ADDRESS = await getDealProviderAddress();
-    await executeScript("RefundAndCollateral", "scripts/utility/deployment/RefundAndCollateral.ts");
-}
-
 export async function deployLightMigrator() {
     process.env.LOCK_DEAL_NFT_ADDRESS = await getLockDealNFTAddress();
     process.env.OLD_DELAY = await getOldDelay();
@@ -53,8 +32,6 @@ export async function deployLightMigrator() {
 
 export async function deployBuilders() {
     process.env.LOCK_DEAL_NFT_ADDRESS = await getLockDealNFTAddress();
-    process.env.REFUND_PROVIDER_ADDRESS = await getRefundProviderAddress();
-    process.env.COLLATERAL_PROVIDER_ADDRESS = await getCollateralProviderAddress();
     await executeScript("Builders", "scripts/utility/deployment/Builders.ts");
 }
 
@@ -70,7 +47,12 @@ export async function deployAllContracts() {
     await executeScript("AllContracts", "scripts/deploy.ts");
 }
 
-export async function deployWithoutRefund() {
+export async function deployWithoutDispenser() {
     process.env.BASEURI = await getBaseURI();
-    await executeScript("deploy core contracts without Refund", "scripts/withoutRefund.ts");
+    await executeScript("deploy core contracts without Dispenser", "scripts/withoutDispenser.ts");
+}
+
+export async function deployDispenser() {
+    process.env.BASEURI = await getBaseURI();
+    await executeScript("deploy DispenserProvider", "scripts/DispenserProvider.ts");
 }

@@ -2,24 +2,23 @@ import { getMenu } from "./utility/deployment/input"
 import {
     deployVaultAndLockDealNFT,
     deploySimpleProviders,
-    deployRefundProvider,
-    deployRefundAndCollateral,
     deployBuilders,
     deployAllContracts,
     deployLightMigrator,
     deployDelayProviderAndMigrator,
-    deployWithoutRefund
+    deployWithoutDispenser,
+    deployDispenser
 } from "./utility/deployment/execute"
 
 const scriptPaths = [
     "withoutRefund.ts",
     "VaultAndLockDealNFT.ts",
     "SimpleProviders.ts",
-    "RefundProvider.ts",
-    "RefundAndCollateral.ts",
     "Builders.ts",
     "LightMigrator.ts",
-    "DelayVaultProvider.ts"
+    "DelayVaultProvider.ts",
+    "DispenserProvider.ts",
+    "WithoutDispenser.ts",
 ]
 
 const menuItems = [
@@ -39,28 +38,25 @@ async function displayMenu() {
                     await deployAllContracts()
                     break
                 case menuItems[1].name:
-                    await deployWithoutRefund()
-                    break
-                case menuItems[2].name:
                     await deployVaultAndLockDealNFT()
                     break
-                case menuItems[3].name:
+                case menuItems[2].name:
                     await deploySimpleProviders()
                     break
-                case menuItems[4].name:
-                    await deployRefundProvider()
-                    break
-                case menuItems[5].name:
-                    await deployRefundAndCollateral()
-                    break
-                case menuItems[6].name:
+                case menuItems[3].name:
                     await deployBuilders()
                     break
-                case menuItems[7].name:
+                case menuItems[4].name:
                     await deployLightMigrator()
                     break
-                case menuItems[8].name:
+                case menuItems[5].name:
                     await deployDelayProviderAndMigrator()
+                    break
+                case menuItems[6].name:
+                    await deployDispenser()
+                    break
+                case menuItems[7].name:
+                    await deployWithoutDispenser()
                     break
                 default:
                     // Exit the loop if an invalid option is selected
