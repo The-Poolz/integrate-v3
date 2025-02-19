@@ -16,8 +16,7 @@ import {
     startTime,
     finishTime,
     password,
-    provider,
-    v1DelayVaultTestnet
+    provider
 } from "./utility/constants"
 import { _withdrawPools, _splitPools } from "./utility/control"
 import { createMassSimplePools } from "./utility/builders"

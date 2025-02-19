@@ -8,7 +8,7 @@ import {
 } from "../typechain-types"
 import { deploy } from "./utility/deployment"
 
-async function deployAllContractsWithoutRefund(baseURI: string = "") {
+async function deployAllContractsWithoutDispenser(baseURI: string = "") {
     const vaultManager: VaultManager = await deploy("VaultManager")
 
     // Deploy LockDealNFT contract
@@ -38,7 +38,7 @@ async function deployAllContractsWithoutRefund(baseURI: string = "") {
 
 const baseURI = process.env.BASEURI || ""
 
-deployAllContractsWithoutRefund(baseURI).catch((error) => {
+deployAllContractsWithoutDispenser(baseURI).catch((error) => {
     console.error(error)
     process.exitCode = 1
 })

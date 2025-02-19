@@ -1,7 +1,7 @@
 // scriptDeployer.js
 import { exec } from "child_process";
 import util from "util";
-import { getBaseURI, getLockDealNFTAddress, getLockProviderAddress, getOldDelay, getNewDelay } from "./input";
+import { getBaseURI, getLockDealNFTAddress } from "./input";
 
 const execAsync = util.promisify(exec);
 
@@ -23,23 +23,9 @@ export async function deploySimpleProviders() {
     await executeScript("SimpleProviders", "scripts/utility/deployment/SimpleProviders.ts");
 }
 
-export async function deployLightMigrator() {
+export async function deployBuilder() {
     process.env.LOCK_DEAL_NFT_ADDRESS = await getLockDealNFTAddress();
-    process.env.OLD_DELAY = await getOldDelay();
-    process.env.NEW_DELAY = await getNewDelay();
-    await executeScript("LightMigrator", "scripts/utility/deployment/LightMigrator.ts");
-}
-
-export async function deployBuilders() {
-    process.env.LOCK_DEAL_NFT_ADDRESS = await getLockDealNFTAddress();
-    await executeScript("Builders", "scripts/utility/deployment/Builders.ts");
-}
-
-export async function deployDelayProviderAndMigrator() {
-    process.env.LOCK_DEAL_NFT_ADDRESS = await getLockDealNFTAddress();
-    process.env.V1_DELAY_VAULT = await getOldDelay();
-    process.env.LOCK_PROVIDER = await getLockProviderAddress();
-    await executeScript("DelayProviderAndMigrator", "scripts/utility/deployment/DelayVaultProvider.ts");
+    await executeScript("Simple Builder", "scripts/utility/deployment/Builders.ts");
 }
 
 export async function deployAllContracts() {
