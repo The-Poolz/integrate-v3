@@ -1,19 +1,19 @@
-import { getMenu } from "./utility/deployment/input"
 import {
     deployVaultAndLockDealNFT,
     deploySimpleProviders,
     deployBuilder,
     deployAllContracts,
     deployWithoutDispenser,
-    deployDispenser
+    deployDispenser,
 } from "./utility/deployment/execute"
+import { getMenu } from "./utility/deployment/input"
 
 const scriptPaths = [
-    "withoutDispenser.ts",
-    "VaultAndLockDealNFT.ts",
-    "SimpleProviders.ts",
-    "Builders.ts",
     "DispenserProvider.ts",
+    "Builder.ts",
+    "SimpleProviders.ts",
+    "VaultAndLockDealNFT.ts",
+    "withoutDispenser.ts",
 ]
 
 const menuItems = [
@@ -33,16 +33,16 @@ async function displayMenu() {
                     await deployAllContracts()
                     break
                 case menuItems[1].name:
-                    await deployVaultAndLockDealNFT()
+                    await deployDispenser()
                     break
                 case menuItems[2].name:
-                    await deploySimpleProviders()
-                    break
-                case menuItems[3].name:
                     await deployBuilder()
                     break
+                case menuItems[3].name:
+                    await deploySimpleProviders()
+                    break
                 case menuItems[4].name:
-                    await deployDispenser()
+                    await deployVaultAndLockDealNFT()
                     break
                 case menuItems[5].name:
                     await deployWithoutDispenser()

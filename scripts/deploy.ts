@@ -14,6 +14,9 @@ async function deployAllContracts(baseURI: string = "") {
 
     // Deploy LockDealNFT contract
     const lockDealNFT: LockDealNFT = await deploy("LockDealNFT", vaultManager.address, baseURI)
+    // Set trustee
+    let tx = await vaultManager.setTrustee(lockDealNFT.address)
+    await tx.wait()
 
     // Deploy DealProvider contract
     const dealProvider: DealProvider = await deploy("DealProvider", lockDealNFT.address)
@@ -30,8 +33,7 @@ async function deployAllContracts(baseURI: string = "") {
     // Deploy DispenserProvider
     const dispenserProvider: DispenserProvider = await deploy("DispenserProvider", lockDealNFT.address)
     
-    let tx = await vaultManager.setTrustee(lockDealNFT.address)
-    await tx.wait()
+    // Set approved contracts
     await setApprovedContracts(lockDealNFT, [
         dealProvider.address,
         lockProvider.address,

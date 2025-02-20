@@ -25,7 +25,7 @@ export async function deploySimpleProviders() {
 
 export async function deployBuilder() {
     process.env.LOCK_DEAL_NFT_ADDRESS = await getLockDealNFTAddress();
-    await executeScript("Simple Builder", "scripts/utility/deployment/Builders.ts");
+    await executeScript("Simple Builder", "scripts/utility/deployment/Builder.ts");
 }
 
 export async function deployAllContracts() {
@@ -39,6 +39,6 @@ export async function deployWithoutDispenser() {
 }
 
 export async function deployDispenser() {
-    process.env.BASEURI = await getBaseURI();
-    await executeScript("deploy DispenserProvider", "scripts/DispenserProvider.ts");
+    process.env.LOCK_DEAL_NFT_ADDRESS = await getLockDealNFTAddress();
+    await executeScript("deploy DispenserProvider", "scripts/utility/deployment/DispenserProvider.ts");
 }
