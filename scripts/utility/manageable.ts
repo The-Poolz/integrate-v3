@@ -1,6 +1,6 @@
-import { Wallet, constants } from "ethers"
 import { ERC20Token, LockDealNFT, VaultManager } from "../../typechain-types"
 import { gasLimit, gasPrice } from "./constants"
+import { Wallet, constants } from "ethers"
 
 async function setTrustee(vaultManager: VaultManager, user: Wallet, address: string) {
     const tx = await vaultManager.connect(user).setTrustee(address, { gasLimit, gasPrice })
@@ -31,4 +31,11 @@ async function approveContract(user: Wallet, lockDealNFT: LockDealNFT, contract:
     await tx.wait()
 }
 
-export { setTrustee, approveContracts, createNewVault, approveToken, approveContract }
+async function setApprovedContracts(lockDealNFT: LockDealNFT, contracts: string[], status: boolean = true) {
+    for (const contract of contracts) {
+        const tx = await lockDealNFT.setApprovedContract(contract, status)
+        await tx.wait()
+    }
+}
+
+export { setTrustee, approveContracts, createNewVault, approveToken, approveContract, setApprovedContracts }

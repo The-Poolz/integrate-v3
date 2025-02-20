@@ -10,13 +10,14 @@ import '@nomicfoundation/hardhat-chai-matchers';
 const config: HardhatUserConfig = {
     defaultNetwork: "hardhat",
     solidity: {
-        version: "0.8.26",
+        version: "0.8.28",
         settings: {
-            evmVersion: 'istanbul',
+            evmVersion: "istanbul",
             optimizer: {
                 enabled: true,
                 runs: 200,
             },
+            viaIR: true,
         },
     },
     networks: {
@@ -82,20 +83,14 @@ const config: HardhatUserConfig = {
     },
     dependencyCompiler: {
         paths: [
-          '@poolzfinance/collateral-provider/contracts/CollateralProvider.sol',
-          '@poolzfinance/refund-provider/contracts/RefundProvider.sol',
           '@poolzfinance/lockdeal-nft/contracts/LockDealNFT/LockDealNFT.sol',
           '@poolzfinance/lockdeal-nft/contracts/SimpleProviders/DealProvider/DealProvider.sol',
           '@poolzfinance/lockdeal-nft/contracts/SimpleProviders/LockProvider/LockDealProvider.sol',
           '@poolzfinance/lockdeal-nft/contracts/SimpleProviders/TimedDealProvider/TimedDealProvider.sol',
           '@poolzfinance/builders/contracts/SimpleBuilder/SimpleBuilder.sol',
-          '@poolzfinance/builders/contracts/SimpleRefundBuilder/SimpleRefundBuilder.sol',
           '@poolzfinance/vault-manager/contracts/VaultManager/VaultManager.sol',
           '@poolzfinance/vault-manager/contracts/test/ERC20Token.sol',
-          '@poolzfinance/dispenser-provider/contracts/DispenserProvider.sol',
-          '@poolzfinance/invest-provider/contracts/InvestProvider.sol',
-          '@poolzfinance/whitelist/contracts/WhiteList.sol',
-          '@poolzfinance/whitelist-router/contracts/WhiteListRouter.sol',
+          '@poolzfinance/dispenser-provider/contracts/DispenserProvider.sol'
         ],
       }
 }

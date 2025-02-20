@@ -1,16 +1,7 @@
 // scriptDeployer.js
 import { exec } from "child_process";
 import util from "util";
-import {
-    getBaseURI,
-    getLockDealNFTAddress,
-    getCollateralProviderAddress,
-    getDealProviderAddress,
-    getLockProviderAddress,
-    getOldDelay,
-    getNewDelay,
-    getRefundProviderAddress,
-} from "./input";
+import { getBaseURI, getLockDealNFTAddress, getDealProviderAddress } from "./input";
 
 const execAsync = util.promisify(exec);
 
@@ -32,37 +23,9 @@ export async function deploySimpleProviders() {
     await executeScript("SimpleProviders", "scripts/utility/deployment/SimpleProviders.ts");
 }
 
-export async function deployRefundProvider() {
+export async function deployBuilder() {
     process.env.LOCK_DEAL_NFT_ADDRESS = await getLockDealNFTAddress();
-    process.env.COLLATERAL = await getCollateralProviderAddress();
-    await executeScript("RefundProvider", "scripts/utility/deployment/RefundProvider.ts");
-}
-
-export async function deployRefundAndCollateral() {
-    process.env.LOCK_DEAL_NFT_ADDRESS = await getLockDealNFTAddress();
-    process.env.PROVIDER_ADDRESS = await getDealProviderAddress();
-    await executeScript("RefundAndCollateral", "scripts/utility/deployment/RefundAndCollateral.ts");
-}
-
-export async function deployLightMigrator() {
-    process.env.LOCK_DEAL_NFT_ADDRESS = await getLockDealNFTAddress();
-    process.env.OLD_DELAY = await getOldDelay();
-    process.env.NEW_DELAY = await getNewDelay();
-    await executeScript("LightMigrator", "scripts/utility/deployment/LightMigrator.ts");
-}
-
-export async function deployBuilders() {
-    process.env.LOCK_DEAL_NFT_ADDRESS = await getLockDealNFTAddress();
-    process.env.REFUND_PROVIDER_ADDRESS = await getRefundProviderAddress();
-    process.env.COLLATERAL_PROVIDER_ADDRESS = await getCollateralProviderAddress();
-    await executeScript("Builders", "scripts/utility/deployment/Builders.ts");
-}
-
-export async function deployDelayProviderAndMigrator() {
-    process.env.LOCK_DEAL_NFT_ADDRESS = await getLockDealNFTAddress();
-    process.env.V1_DELAY_VAULT = await getOldDelay();
-    process.env.LOCK_PROVIDER = await getLockProviderAddress();
-    await executeScript("DelayProviderAndMigrator", "scripts/utility/deployment/DelayVaultProvider.ts");
+    await executeScript("Simple Builder", "scripts/utility/deployment/Builder.ts");
 }
 
 export async function deployAllContracts() {
@@ -70,7 +33,17 @@ export async function deployAllContracts() {
     await executeScript("AllContracts", "scripts/deploy.ts");
 }
 
-export async function deployWithoutRefund() {
+export async function deployWithoutDispenser() {
     process.env.BASEURI = await getBaseURI();
-    await executeScript("deploy core contracts without Refund", "scripts/withoutRefund.ts");
+    await executeScript("deploy core contracts without Dispenser", "scripts/withoutDispenser.ts");
+}
+
+export async function deployDispenser() {
+    process.env.LOCK_DEAL_NFT_ADDRESS = await getLockDealNFTAddress();
+    await executeScript("deploy DispenserProvider", "scripts/utility/deployment/DispenserProvider.ts");
+}
+
+export async function upgrade() {
+    process.env.DEAL_PROVIDER_ADDRESS = await getDealProviderAddress();
+    await executeScript("update contracts from 1.3 to 1.4", "scripts/utility/deployment/upgrade.ts");
 }

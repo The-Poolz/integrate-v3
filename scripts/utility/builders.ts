@@ -1,4 +1,4 @@
-import { SimpleBuilder, SimpleRefundBuilder, ERC20Token, VaultManager } from "../../typechain-types"
+import { SimpleBuilder, ERC20Token, VaultManager } from "../../typechain-types"
 import { BuilderState } from "../../typechain-types/contracts/LockDealNFT/contracts/Builders/SimpleBuilder/SimpleBuilder"
 import { gasLimit, gasPrice, amount, finishTime } from "./constants"
 import { getSignature } from "./creation"
@@ -40,29 +40,4 @@ export async function createMassSimplePools(
         )
     await tx.wait()
     console.log("Mass simple NFTs created")
-}
-
-export async function createMassRefundPools(
-    user: Wallet,
-    simpleRefundBuilder: SimpleRefundBuilder,
-    vaultManager: VaultManager,
-    provider: string,
-    token: ERC20Token,
-    mainCoin: ERC20Token
-) {
-    const tx = await simpleRefundBuilder
-        .connect(user)
-        .buildMassPools(
-            [provider, token.address, mainCoin.address],
-            sendData,
-            [[amount.mul(3), finishTime], []],
-            getSignature(user, vaultManager, token, token.address, amount.mul(9)),
-            getSignature(user, vaultManager, token, mainCoin.address, amount.mul(3)),
-            {
-                gasLimit,
-                gasPrice,
-            }
-        )
-    await tx.wait()
-    console.log("Mass refund NFTs created")
 }
