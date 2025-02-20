@@ -5,6 +5,7 @@ import {
     deployAllContracts,
     deployWithoutDispenser,
     deployDispenser,
+    upgrade,
 } from "./utility/deployment/execute"
 import { getMenu } from "./utility/deployment/input"
 
@@ -18,6 +19,7 @@ const scriptPaths = [
 
 const menuItems = [
     { name: "Deploy All contracts" },
+    { name: "Upgrade from v1.3 to v1.4" },
     ...scriptPaths.map((script) => ({ name: `Deploy ${script.replace(".ts", "")}` })),
 ]
 
@@ -33,18 +35,21 @@ async function displayMenu() {
                     await deployAllContracts()
                     break
                 case menuItems[1].name:
-                    await deployDispenser()
+                    await upgrade()
                     break
                 case menuItems[2].name:
-                    await deployBuilder()
+                    await deployDispenser()
                     break
                 case menuItems[3].name:
-                    await deploySimpleProviders()
+                    await deployBuilder()
                     break
                 case menuItems[4].name:
-                    await deployVaultAndLockDealNFT()
+                    await deploySimpleProviders()
                     break
                 case menuItems[5].name:
+                    await deployVaultAndLockDealNFT()
+                    break
+                case menuItems[6].name:
                     await deployWithoutDispenser()
                     break
                 default:

@@ -1,7 +1,7 @@
 // scriptDeployer.js
 import { exec } from "child_process";
 import util from "util";
-import { getBaseURI, getLockDealNFTAddress } from "./input";
+import { getBaseURI, getLockDealNFTAddress, getDealProviderAddress } from "./input";
 
 const execAsync = util.promisify(exec);
 
@@ -41,4 +41,9 @@ export async function deployWithoutDispenser() {
 export async function deployDispenser() {
     process.env.LOCK_DEAL_NFT_ADDRESS = await getLockDealNFTAddress();
     await executeScript("deploy DispenserProvider", "scripts/utility/deployment/DispenserProvider.ts");
+}
+
+export async function upgrade() {
+    process.env.DEAL_PROVIDER_ADDRESS = await getDealProviderAddress();
+    await executeScript("update contracts from 1.3 to 1.4", "scripts/utility/deployment/upgrade.ts");
 }

@@ -28,7 +28,7 @@ async function getLockDealNFTAddress() {
 }
 
 async function getDealProviderAddress() {
-    return await promptUser("Enter the Deal Provider address for deployment:", "providerAddress")
+    return await promptUser("Enter the current Deal Provider address for deployment:", "providerAddress")
 }
 
 async function getMenu(menuItems: { name: string }[]) {

@@ -8,6 +8,7 @@ import {
     DispenserProvider
 } from "../typechain-types"
 import { deploy } from "./utility/deployment"
+import { setApprovedContracts } from "./utility/manageable"
 
 async function deployAllContracts(baseURI: string = "") {
     const vaultManager: VaultManager = await deploy("VaultManager")
@@ -49,10 +50,3 @@ deployAllContracts(baseURI).catch((error) => {
     console.error(error)
     process.exitCode = 1
 })
-
-async function setApprovedContracts(lockDealNFT: LockDealNFT, contracts: string[]) {
-    for (const contract of contracts) {
-        const tx = await lockDealNFT.setApprovedContract(contract, true)
-        await tx.wait()
-    }
-}
