@@ -6,7 +6,7 @@ export async function deployDispenser(lockDealNFT: string) {
     const LockDealNFTFactory = await ethers.getContractFactory("LockDealNFT")
     const LockDealNFT: LockDealNFT = LockDealNFTFactory.attach(lockDealNFT) as LockDealNFT
     const DispenserProviderAddress = (await deploy("DispenserProvider", lockDealNFT)) as DispenserProvider
-    await LockDealNFT.setApprovedContract(DispenserProviderAddress.address, true)
+    await LockDealNFT.setApprovedContract(await DispenserProviderAddress.getAddress(), true)
 }
 
 const lockDealNFT = process.env.LOCK_DEAL_NFT_ADDRESS || ""

@@ -15,23 +15,23 @@ async function upgrade(dealProvider: string = "") {
     const lockDealNFT: LockDealNFT = LockDealNFTFactory.attach(lockDealNFTAddress) as LockDealNFT
     // deploy LockDealProvider and TimedDealProvider
     const lockDealProvider: LockDealProvider = await deploy("LockDealProvider", lockDealNFTAddress, dealProvider)
-    console.log(`LockDealProvider address: ${lockDealProvider.address}`)
+    console.log(`LockDealProvider address: ${await lockDealProvider.getAddress()}`)
 
     const timedDealProvider: TimedDealProvider = await deploy(
         "TimedDealProvider",
         lockDealNFTAddress,
-        lockDealProvider.address
+        await lockDealProvider.getAddress()
     )
-    console.log(`TimedDealProvider address: ${timedDealProvider.address}`)
+    console.log(`TimedDealProvider address: ${await timedDealProvider.getAddress()}`)
 
     const dispenserProvider: DispenserProvider = await deploy("DispenserProvider", lockDealNFTAddress)
-    console.log(`DispenserProvider address: ${dispenserProvider.address}`)
+    console.log(`DispenserProvider address: ${await dispenserProvider.getAddress()}`)
 
     // Set approved contracts
     await setApprovedContracts(lockDealNFT, [
-        lockDealProvider.address,
-        timedDealProvider.address,
-        dispenserProvider.address,
+        await lockDealProvider.getAddress(),
+        await timedDealProvider.getAddress(),
+        await dispenserProvider.getAddress(),
     ])
 }
 

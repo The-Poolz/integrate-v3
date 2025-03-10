@@ -5,7 +5,7 @@ import {
     TimedDealProvider,
     VaultManager,
     SimpleBuilder,
-    DispenserProvider
+    DispenserProvider,
 } from "../typechain-types"
 import { deploy } from "./utility/deployment"
 import { setApprovedContracts } from "./utility/manageable"
@@ -14,33 +14,41 @@ async function deployAllContracts(baseURI: string = "") {
     const vaultManager: VaultManager = await deploy("VaultManager")
 
     // Deploy LockDealNFT contract
-    const lockDealNFT: LockDealNFT = await deploy("LockDealNFT", vaultManager.address, baseURI)
+    const lockDealNFT: LockDealNFT = await deploy("LockDealNFT", await vaultManager.getAddress(), baseURI)
     // Set trustee
-    let tx = await vaultManager.setTrustee(lockDealNFT.address)
+    let tx = await vaultManager.setTrustee(await lockDealNFT.getAddress())
     await tx.wait()
 
     // Deploy DealProvider contract
-    const dealProvider: DealProvider = await deploy("DealProvider", lockDealNFT.address)
+    const dealProvider: DealProvider = await deploy("DealProvider", await lockDealNFT.getAddress())
 
     // Deploy LockDealProvider contract
-    const lockProvider: LockDealProvider = await deploy("LockDealProvider", lockDealNFT.address, dealProvider.address)
+    const lockProvider: LockDealProvider = await deploy(
+        "LockDealProvider",
+        await lockDealNFT.getAddress(),
+        await dealProvider.getAddress()
+    )
 
     // Deploy TimedDealProvider contract
-    const timedDealProvider: TimedDealProvider = await deploy("TimedDealProvider", lockDealNFT.address, lockProvider.address)
+    const timedDealProvider: TimedDealProvider = await deploy(
+        "TimedDealProvider",
+        await lockDealNFT.getAddress(),
+        await lockProvider.getAddress()
+    )
 
     // Deploy Buiders
-    const simpleBuilder: SimpleBuilder = await deploy("SimpleBuilder", lockDealNFT.address)
+    const simpleBuilder: SimpleBuilder = await deploy("SimpleBuilder", await lockDealNFT.getAddress())
 
     // Deploy DispenserProvider
-    const dispenserProvider: DispenserProvider = await deploy("DispenserProvider", lockDealNFT.address)
-    
+    const dispenserProvider: DispenserProvider = await deploy("DispenserProvider", await lockDealNFT.getAddress())
+
     // Set approved contracts
     await setApprovedContracts(lockDealNFT, [
-        dealProvider.address,
-        lockProvider.address,
-        timedDealProvider.address,
-        simpleBuilder.address,
-        dispenserProvider.address
+        await dealProvider.getAddress(),
+        await lockProvider.getAddress(),
+        await timedDealProvider.getAddress(),
+        await simpleBuilder.getAddress(),
+        await dispenserProvider.getAddress(),
     ])
 }
 

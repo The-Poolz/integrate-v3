@@ -3,15 +3,15 @@ import { deploy } from "../deployment"
 
 async function deployNFTandVaultManager(baseURI: string = "") {
     const vaultManager: VaultManager = await deploy("VaultManager")
-    await deploy("LockDealNFT", vaultManager.address, baseURI)
+    await deploy("LockDealNFT", await vaultManager.getAddress(), baseURI)
     // deploy LockDealNFT contract
-    const lockDealNFT: LockDealNFT = await deploy("LockDealNFT", vaultManager.address, baseURI)
+    const lockDealNFT: LockDealNFT = await deploy("LockDealNFT", await vaultManager.getAddress(), baseURI)
     // Set trustee
-    let tx = await vaultManager.setTrustee(lockDealNFT.address)
+    let tx = await vaultManager.setTrustee(await lockDealNFT.getAddress())
     await tx.wait()
     console.log("LockDealNFT and VaultManager deployed successfully")
-    console.log("LockDealNFT address: ", lockDealNFT.address)
-    console.log("VaultManager address: ", vaultManager.address)
+    console.log("LockDealNFT address: ", await lockDealNFT.getAddress())
+    console.log("VaultManager address: ", await vaultManager.getAddress())
 }
 
 // Retrieve environment variable
