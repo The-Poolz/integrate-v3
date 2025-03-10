@@ -70,7 +70,7 @@ describe("Token Vault Id", function () {
         finishTime = startTime + 7 * ONE_DAY // plus 7 days from `startTime`
         const mainCoinAmount = amount / 2n
         addresses = [
-            await receiver.address,
+            await receiver.getAddress(),
             await token.getAddress(),
             await mainCoin.getAddress(),
             await timedProvider.getAddress(),

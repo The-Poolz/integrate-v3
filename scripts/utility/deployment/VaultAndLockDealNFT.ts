@@ -3,7 +3,7 @@ import { deploy } from "../deployment"
 
 async function deployNFTandVaultManager(baseURI: string = "") {
     const vaultManager: VaultManager = await deploy("VaultManager")
-    await deploy("LockDealNFT", vaultManager.address, baseURI)
+    await deploy("LockDealNFT", await vaultManager.getAddress(), baseURI)
     // deploy LockDealNFT contract
     const lockDealNFT: LockDealNFT = await deploy("LockDealNFT", await vaultManager.getAddress(), baseURI)
     // Set trustee

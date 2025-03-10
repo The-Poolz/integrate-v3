@@ -15,7 +15,9 @@ async function approveContracts(user: Wallet, lockDealNFT: LockDealNFT, contract
 }
 
 async function createNewVault(vaultManager: VaultManager, user: Wallet, token: ERC20Token) {
-    const tx = await vaultManager.connect(user)["createNewVault(address)"](token.address, { gasLimit, gasPrice })
+    const tx = await vaultManager
+        .connect(user)
+        ["createNewVault(address)"](await token.getAddress(), { gasLimit, gasPrice })
     await tx.wait()
 }
 
@@ -25,7 +27,7 @@ async function approveToken(token: ERC20Token, user: Wallet, spender: string) {
 }
 
 async function approveContract(user: Wallet, lockDealNFT: LockDealNFT, contract: any) {
-    const tx = await lockDealNFT.connect(user).setApprovedContract(contract.address, true, {
+    const tx = await lockDealNFT.connect(user).setApprovedContract(await contract.getAddress(), true, {
         gasLimit: gasLimit,
         gasPrice: gasPrice,
     })
