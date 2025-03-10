@@ -1,6 +1,6 @@
 import { SimpleBuilder, ERC20Token, VaultManager } from "../../typechain-types"
 import { BuilderState } from "../../typechain-types/contracts/LockDealNFT/contracts/Builders/SimpleBuilder/SimpleBuilder"
-import { gasLimit, gasPrice, amount, finishTime } from "./constants"
+import { gasLimit, gasPrice, amount } from "./constants"
 import { getSignature } from "./creation"
 import { Wallet } from "ethers"
 
@@ -29,10 +29,10 @@ export async function createMassSimplePools(
     const tx = await simpleBuilder
         .connect(user)
         .buildMassPools(
-            [provider, token.address],
+            [provider, await token.getAddress()],
             sendData,
             [],
-            getSignature(user, vaultManager, token, token.address, amount.mul(9)),
+            getSignature(user, vaultManager, token, await token.getAddress(), amount.mul(9)),
             {
                 gasLimit,
                 gasPrice,

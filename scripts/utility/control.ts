@@ -4,7 +4,7 @@ import { LockDealNFT } from "../../typechain-types"
 import { gasLimit, gasPrice } from "./constants"
 
 export async function _splitPools(user: Wallet, lockDealNFT: LockDealNFT, ids: number[]) {
-    const ratio = ethers.utils.parseUnits("5", 20) // 50%
+    const ratio = ethers.parseUnits("5", 20) // 50%
     const packedData = ethers.utils.defaultAbiCoder.encode(["uint256", "address"], [ratio, user.address])
     for (const id of ids) {
         const tx = await lockDealNFT

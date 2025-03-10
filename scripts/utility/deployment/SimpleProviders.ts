@@ -7,15 +7,23 @@ export async function deploySimpleProviders(lockDealNFTAddress: string) {
     const LockDealNFTFactory = await ethers.getContractFactory("LockDealNFT")
     const lockDealNFT: LockDealNFT = LockDealNFTFactory.attach(lockDealNFTAddress) as LockDealNFT
     const dealProvider: DealProvider = await deploy("DealProvider", lockDealNFTAddress)
-    const lockProvider: LockDealProvider = await deploy("LockDealProvider", lockDealNFTAddress, dealProvider.address)
+    const lockProvider: LockDealProvider = await deploy(
+        "LockDealProvider",
+        lockDealNFTAddress,
+        await dealProvider.getAddress()
+    )
     const TimedDealProvider: TimedDealProvider = await deploy(
         "TimedDealProvider",
         lockDealNFTAddress,
-        lockProvider.address
+        await lockProvider.getAddress()
     )
 
     console.log("SimpleProviders deployed successfully!")
-    await setApprovedContracts(lockDealNFT, [dealProvider.address, lockProvider.address, TimedDealProvider.address])
+    await setApprovedContracts(lockDealNFT, [
+        await dealProvider.getAddress(),
+        await lockProvider.getAddress(),
+        await TimedDealProvider.getAddress(),
+    ])
 }
 
 const lockDealNFTAddress = process.env.LOCK_DEAL_NFT_ADDRESS || ""
