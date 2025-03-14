@@ -8,6 +8,7 @@ import {
     upgrade,
 } from "./utility/deployment/execute"
 import { getMenu } from "./utility/deployment/input"
+import { execSync } from "child_process"
 
 const scriptPaths = [
     "DispenserProvider.ts",
@@ -21,11 +22,13 @@ const menuItems = [
     { name: "Deploy All contracts" },
     { name: "Upgrade from v1.3 to v1.4" },
     ...scriptPaths.map((script) => ({ name: `Deploy ${script.replace(".ts", "")}` })),
+    { name: "Exit" }, // Add Exit option here
 ]
 
 async function displayMenu() {
     let keepMenuOpen = true
 
+    // Menu loop
     while (keepMenuOpen) {
         try {
             const answer = await getMenu(menuItems)
@@ -52,13 +55,18 @@ async function displayMenu() {
                 case menuItems[6].name:
                     await deployWithoutDispenser()
                     break
+                case menuItems[7].name: // Exit case
+                    console.log("Exiting...")
+                    keepMenuOpen = false
+                    break
                 default:
-                    // Exit the loop if an invalid option is selected
+                    console.log("Invalid option selected, exiting menu...")
                     keepMenuOpen = false
                     break
             }
         } catch (error) {
             console.error(`Error executing command: ${error}`)
+            process.exit(1) // Exit with error code in case of failure
         }
     }
 }

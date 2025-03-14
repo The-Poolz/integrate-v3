@@ -1,2 +1,2 @@
-start cmd /k npx truffle dashboard
-start cmd /k ts-node .\\scripts\\terminal.ts
+start cmd /c npx truffle dashboard
+start cmd /c ts-node .\\scripts\\terminal.ts
