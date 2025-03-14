@@ -3,17 +3,14 @@ import { setApprovedContracts } from "../../utility/manageable"
 import { deploy } from "../deployment"
 import { ethers } from "hardhat"
 
-async function upgrade(dealProvider: string = "") {
-    // Get LockDealNFT address from dealProvider
-    if (!dealProvider) {
-        throw new Error("dealProvider address is required")
-    }
-    const DealProviderFactory = await ethers.getContractFactory("DealProvider")
-    const dealProviderInstance = DealProviderFactory.attach(dealProvider)
-    const lockDealNFTAddress = await dealProviderInstance.lockDealNFT()
+async function upgrade(lockDealNFTAddress: string = "") {
+    // attach lockDealNFT
     const LockDealNFTFactory = await ethers.getContractFactory("LockDealNFT")
-    const lockDealNFT: LockDealNFT = LockDealNFTFactory.attach(lockDealNFTAddress) as LockDealNFT
-    // deploy LockDealProvider and TimedDealProvider
+    const lockDealNFT: LockDealNFT = LockDealNFTFactory.attach(lockDealNFTAddress) as any as LockDealNFT
+    // deploy DealProvider, LockDealProvider and TimedDealProvider
+    const dealProvider = await deploy("DealProvider", lockDealNFTAddress)
+    console.log(`DealProvider address: ${await dealProvider.getAddress()}`)
+
     const lockDealProvider: LockDealProvider = await deploy("LockDealProvider", lockDealNFTAddress, dealProvider)
     console.log(`LockDealProvider address: ${await lockDealProvider.getAddress()}`)
 
@@ -29,6 +26,7 @@ async function upgrade(dealProvider: string = "") {
 
     // Set approved contracts
     await setApprovedContracts(lockDealNFT, [
+        await dealProvider.getAddress(),
         await lockDealProvider.getAddress(),
         await timedDealProvider.getAddress(),
         await dispenserProvider.getAddress(),
@@ -36,6 +34,6 @@ async function upgrade(dealProvider: string = "") {
 }
 
 // Retrieve environment variable
-const dealProvider = process.env.DEAL_PROVIDER_ADDRESS || ""
+const lockDealNFTAddress = process.env.LOCK_DEAL_NFT_ADDRESS || ""
 
-upgrade(dealProvider)
+upgrade(lockDealNFTAddress)

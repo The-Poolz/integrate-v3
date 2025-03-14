@@ -44,6 +44,6 @@ export async function deployDispenser() {
 }
 
 export async function upgrade() {
-    process.env.DEAL_PROVIDER_ADDRESS = await getDealProviderAddress();
+    process.env.LOCK_DEAL_NFT_ADDRESS = await getLockDealNFTAddress();
     await executeScript("update contracts from 1.3 to 1.4", "scripts/utility/deployment/upgrade.ts");
 }
