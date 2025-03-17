@@ -12,7 +12,7 @@ const config: HardhatUserConfig = {
     solidity: {
         version: "0.8.28",
         settings: {
-            evmVersion: "istanbul",
+            evmVersion: "cancun",
             optimizer: {
                 enabled: true,
                 runs: 200,
@@ -90,7 +90,8 @@ const config: HardhatUserConfig = {
           '@poolzfinance/builders/contracts/SimpleBuilder/SimpleBuilder.sol',
           '@poolzfinance/vault-manager/contracts/VaultManager/VaultManager.sol',
           '@poolzfinance/vault-manager/contracts/test/ERC20Token.sol',
-          '@poolzfinance/dispenser-provider/contracts/DispenserProvider.sol'
+          '@poolzfinance/dispenser-provider/contracts/DispenserProvider.sol',
+          '@poolzfinance/invest-provider/contracts/InvestProvider.sol',
         ],
       }
 }

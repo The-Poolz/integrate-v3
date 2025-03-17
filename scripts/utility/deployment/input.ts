@@ -31,8 +31,12 @@ async function getDealProviderAddress() {
     return await promptUser("Enter the current Deal Provider address for deployment:", "providerAddress")
 }
 
+async function getDispenserProviderAddress() {
+    return await promptUser("Enter the current Dispenser Provider address for deployment:", "providerAddress")
+}
+
 async function getMenu(menuItems: { name: string }[]) {
     return await promptUser("Choose a menu item:", "menuItem", "select", menuItems)
 }
 
-export { getBaseURI, getLockDealNFTAddress, getDealProviderAddress, getMenu }
+export { getBaseURI, getLockDealNFTAddress, getDealProviderAddress, getDispenserProviderAddress, getMenu }
