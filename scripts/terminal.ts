@@ -5,10 +5,10 @@ import {
     deployAllContracts,
     deployWithoutDispenser,
     deployDispenser,
+    deployInvestProvider,
     upgrade,
 } from "./utility/deployment/execute"
 import { getMenu } from "./utility/deployment/input"
-import { execSync } from "child_process"
 
 const scriptPaths = [
     "DispenserProvider.ts",
@@ -16,6 +16,7 @@ const scriptPaths = [
     "SimpleProviders.ts",
     "VaultAndLockDealNFT.ts",
     "withoutDispenser.ts",
+    "InvestProvider.ts",
 ]
 
 const menuItems = [
@@ -55,7 +56,10 @@ async function displayMenu() {
                 case menuItems[6].name:
                     await deployWithoutDispenser()
                     break
-                case menuItems[7].name: // Exit case
+                case menuItems[7].name:
+                    await deployInvestProvider()
+                    break
+                case menuItems[8].name: // Exit case
                     console.log("Exiting...")
                     keepMenuOpen = false
                     break
