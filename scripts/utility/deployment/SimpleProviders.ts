@@ -5,7 +5,7 @@ import { ethers } from "hardhat"
 
 export async function deploySimpleProviders(lockDealNFTAddress: string) {
     const LockDealNFTFactory = await ethers.getContractFactory("LockDealNFT")
-    const lockDealNFT: LockDealNFT = LockDealNFTFactory.attach(lockDealNFTAddress) as LockDealNFT
+    const lockDealNFT: LockDealNFT = LockDealNFTFactory.attach(lockDealNFTAddress) as any as LockDealNFT
     const dealProvider: DealProvider = await deploy("DealProvider", lockDealNFTAddress)
     const lockProvider: LockDealProvider = await deploy(
         "LockDealProvider",
