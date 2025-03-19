@@ -7,6 +7,7 @@ import {
     SimpleBuilder,
 } from "../typechain-types"
 import { deploy } from "./utility/deployment"
+import { setApprovedContracts } from "./utility/manageable"
 
 async function deployAllContractsWithoutDispenser(baseURI: string = "") {
     const vaultManager: VaultManager = await deploy("VaultManager")
@@ -53,10 +54,3 @@ deployAllContractsWithoutDispenser(baseURI).catch((error) => {
     console.error(error)
     process.exitCode = 1
 })
-
-async function setApprovedContracts(lockDealNFT: LockDealNFT, contracts: string[]) {
-    for (const contract of contracts) {
-        const tx = await lockDealNFT.setApprovedContract(contract, true)
-        await tx.wait()
-    }
-}

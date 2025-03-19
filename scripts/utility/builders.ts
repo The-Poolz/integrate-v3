@@ -1,10 +1,9 @@
 import { SimpleBuilder, ERC20Token, VaultManager } from "../../typechain-types"
-import { BuilderState } from "../../typechain-types/contracts/LockDealNFT/contracts/Builders/SimpleBuilder/SimpleBuilder"
 import { gasLimit, gasPrice, amount } from "./constants"
 import { getSignature } from "./creation"
 import { Wallet } from "ethers"
 
-const sendData: BuilderState.BuilderStruct = {
+const sendData = {
     userPools: [
         { user: "0xf7f1f00b13F4c3D818f052498902067aB91a3A66", amount: amount },
         { user: "0xf7f1f00b13F4c3D818f052498902067aB91a3A66", amount: amount },
@@ -16,7 +15,7 @@ const sendData: BuilderState.BuilderStruct = {
         { user: "0xf7f1f00b13F4c3D818f052498902067aB91a3A66", amount: amount },
         { user: "0xf7f1f00b13F4c3D818f052498902067aB91a3A66", amount: amount },
     ],
-    totalAmount: amount.mul(9),
+    totalAmount: amount * 9n,
 }
 
 export async function createMassSimplePools(
@@ -32,7 +31,7 @@ export async function createMassSimplePools(
             [provider, await token.getAddress()],
             sendData,
             [],
-            getSignature(user, vaultManager, token, await token.getAddress(), amount.mul(9)),
+            await getSignature(user, vaultManager, token, await token.getAddress(), amount * 9n),
             {
                 gasLimit,
                 gasPrice,
