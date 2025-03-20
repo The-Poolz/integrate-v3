@@ -1,5 +1,5 @@
-import { VaultManager, LockDealNFT } from "../../../typechain-types"
-import { deploy } from "../deployment"
+import { VaultManager, LockDealNFT } from "../../typechain-types"
+import { deploy } from "../utility/deployment"
 
 async function deployNFTandVaultManager(baseURI: string = "") {
     const vaultManager: VaultManager = await deploy("VaultManager")

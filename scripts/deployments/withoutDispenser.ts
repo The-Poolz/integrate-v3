@@ -5,18 +5,18 @@ import {
     TimedDealProvider,
     VaultManager,
     SimpleBuilder,
-    DispenserProvider,
-} from "../typechain-types"
-import { deploy } from "./utility/deployment"
-import { setApprovedContracts } from "./utility/manageable"
+} from "../../typechain-types"
+import { deploy } from "../utility/deployment"
+import { setApprovedContracts } from "../utility/manageable"
 
-async function deployAllContracts(baseURI: string = "") {
+async function deployAllContractsWithoutDispenser(baseURI: string = "") {
     const vaultManager: VaultManager = await deploy("VaultManager")
 
     // Deploy LockDealNFT contract
     const lockDealNFT: LockDealNFT = await deploy("LockDealNFT", await vaultManager.getAddress(), baseURI)
+
     // Set trustee
-    let tx = await vaultManager.setTrustee(await lockDealNFT.getAddress())
+    let tx = await vaultManager.setTrustee(lockDealNFT.getAddress())
     await tx.wait()
 
     // Deploy DealProvider contract
@@ -39,22 +39,18 @@ async function deployAllContracts(baseURI: string = "") {
     // Deploy Buiders
     const simpleBuilder: SimpleBuilder = await deploy("SimpleBuilder", await lockDealNFT.getAddress())
 
-    // Deploy DispenserProvider
-    const dispenserProvider: DispenserProvider = await deploy("DispenserProvider", await lockDealNFT.getAddress())
-
     // Set approved contracts
     await setApprovedContracts(lockDealNFT, [
         await dealProvider.getAddress(),
         await lockProvider.getAddress(),
         await timedDealProvider.getAddress(),
         await simpleBuilder.getAddress(),
-        await dispenserProvider.getAddress(),
     ])
 }
 
 const baseURI = process.env.BASEURI || ""
 
-deployAllContracts(baseURI).catch((error) => {
+deployAllContractsWithoutDispenser(baseURI).catch((error) => {
     console.error(error)
     process.exitCode = 1
 })
