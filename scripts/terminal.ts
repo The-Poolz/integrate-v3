@@ -7,8 +7,8 @@ import {
     deployDispenser,
     deployInvestProvider,
     upgrade,
-} from "./utility/deployment/execute"
-import { getMenu } from "./utility/deployment/input"
+} from "./utility/execute"
+import { getMenu } from "./utility/input"
 
 const scriptPaths = [
     "DispenserProvider.ts",
