@@ -3,10 +3,10 @@ import { ethers } from "hardhat"
 
 export const gasLimit = 30_000_000
 export const gasPrice = ethers.parseUnits("5", "gwei")
-export const unixTime = Math.floor(Date.now() / 1000)
-export const week = 60 * 60 * 24 * 7
-export const startTime = unixTime + 1000
-export const finishTime = unixTime + week * 2
+export const unixTime: bigint = BigInt(Math.floor(Date.now() / 1000))
+export const week = 60n * 60n * 24n * 7n
+export const startTime = unixTime + 1000n
+export const finishTime = unixTime + week * 2n
 export const amount = ethers.parseUnits("100", 8)
 export const password = process.env.PASSWORD ?? ""
 export const POOLX = "0xbAeA9aBA1454DF334943951d51116aE342eAB255"

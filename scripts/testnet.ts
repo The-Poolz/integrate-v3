@@ -12,7 +12,7 @@ import { amount, startTime, finishTime, password, provider } from "./utility/con
 import { _withdrawPools, _splitPools } from "./utility/control"
 import { createSimpleNFT } from "./utility/creation"
 import { deployFrom } from "./utility/deployment"
-import { setTrustee, approveContracts, createNewVault, approveToken } from "./utility/manageable"
+import { setTrustee, setApprovedContracts, createNewVault, approveToken } from "./utility/manageable"
 import { Wallet } from "ethers"
 
 let vaultManager: VaultManager,
@@ -61,7 +61,12 @@ async function deploy(user: Wallet) {
 
 async function setup(user: Wallet) {
     await setTrustee(vaultManager, user, await lockDealNFT.getAddress())
-    await approveContracts(user, await lockDealNFT, [dealProvider, lockProvider, timedProvider, simpleBuilder])
+    await setApprovedContracts(lockDealNFT, [
+        await dealProvider.getAddress(),
+        await lockProvider.getAddress(),
+        await timedProvider.getAddress(),
+        await simpleBuilder.getAddress(),
+    ])
     await createNewVault(vaultManager, user, token)
     await createNewVault(vaultManager, user, mainCoin)
     await approveToken(token, user, await vaultManager.getAddress())
