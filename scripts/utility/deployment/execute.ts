@@ -1,23 +1,17 @@
-// scriptDeployer.js
-import { exec } from "child_process";
-import { getBaseURI, getLockDealNFTAddress, getDealProviderAddress, getDispenserProviderAddress } from "./input";
+import { execSync } from "child_process";
+import { getBaseURI, getLockDealNFTAddress, getDispenserProviderAddress } from "./input";
 
 async function executeScript(scriptName: string, scriptPath: string) {
     const network = "truffleDashboard";
     const command = `npx hardhat run ${scriptPath} --network ${network}`;
 
-    await new Promise((resolve, reject) => {
-        exec(command, (error, stdout, stderr) => {
-            if (error) {
-                console.error(`Error executing ${scriptName}:`, stderr);
-                reject(error);
-            } else {
-                console.log(stdout);
-                console.log(`Command executed successfully: Deploy ${scriptName}`);
-                resolve(null);
-            }
-        });
-    });
+    try {
+        await execSync(command, { stdio: "inherit" });
+        console.log(`Command executed successfully: Deploy ${scriptName}`);
+    } catch (error) {
+        console.error(`Error executing ${scriptName}:`, error);
+        throw error;
+    }
 }
 
 export async function deployVaultAndLockDealNFT() {

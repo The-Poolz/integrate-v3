@@ -1,4 +1,5 @@
 import { DispenserProvider, LockDealNFT } from "../../../typechain-types"
+import { setApprovedContracts } from "../manageable"
 import { deploy } from "../deployment"
 import { ethers } from "hardhat"
 
@@ -14,8 +15,7 @@ export async function deployInvestProvider(DispenserProviderAddress: string) {
     const InvestProvider = await deploy("InvestProvider", lockDealNFTAddress, DispenserProviderAddress)
     await InvestProvider.waitForDeployment()
     // set InvestProvider as approved contract
-    const tx = await LockDealNFT.setApprovedContract(await InvestProvider.getAddress(), true)
-    await tx.wait()
+    await setApprovedContracts(LockDealNFT, [await InvestProvider.getAddress()])
 }
 
 const DispenserProviderAddress = process.env.DISPENSER_PROVIDER_ADDRESS || ""
