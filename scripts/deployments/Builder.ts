@@ -1,6 +1,6 @@
-import { LockDealNFT, SimpleBuilder } from "../../../typechain-types"
-import { setApprovedContracts } from "../manageable"
-import { deploy } from "../deployment"
+import { LockDealNFT, SimpleBuilder } from "../../typechain-types"
+import { deploy } from "../utility/deployment"
+import { setApprovedContracts } from "../utility/manageable"
 import { ethers } from "hardhat"
 
 export async function deployBuilder(lockDealNFT: string) {

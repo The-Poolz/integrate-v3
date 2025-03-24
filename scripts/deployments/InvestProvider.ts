@@ -1,6 +1,6 @@
-import { DispenserProvider, LockDealNFT } from "../../../typechain-types"
-import { setApprovedContracts } from "../manageable"
-import { deploy } from "../deployment"
+import { DispenserProvider, LockDealNFT } from "../../typechain-types"
+import { setApprovedContracts } from "../utility/manageable"
+import { deploy } from "../utility/deployment"
 import { ethers } from "hardhat"
 
 export async function deployInvestProvider(DispenserProviderAddress: string) {

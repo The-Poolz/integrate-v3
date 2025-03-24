@@ -1,6 +1,6 @@
-import { DealProvider, LockDealNFT, LockDealProvider, TimedDealProvider } from "../../../typechain-types"
-import { deploy } from "../deployment"
-import { setApprovedContracts } from "../manageable"
+import { DealProvider, LockDealNFT, LockDealProvider, TimedDealProvider } from "../../typechain-types"
+import { deploy } from "../utility/deployment"
+import { setApprovedContracts } from "../utility/manageable"
 import { ethers } from "hardhat"
 
 export async function deploySimpleProviders(lockDealNFTAddress: string) {

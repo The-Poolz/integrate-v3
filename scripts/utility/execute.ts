@@ -16,40 +16,40 @@ async function executeScript(scriptName: string, scriptPath: string) {
 
 export async function deployVaultAndLockDealNFT() {
     process.env.BASEURI = await getBaseURI();
-    await executeScript("VaultAndLockDealNFT", "scripts/utility/deployment/VaultAndLockDealNFT.ts");
+    await executeScript("VaultAndLockDealNFT", "scripts/deployments/VaultAndLockDealNFT.ts");
 }
 
 export async function deploySimpleProviders() {
     process.env.LOCK_DEAL_NFT_ADDRESS = await getLockDealNFTAddress();
-    await executeScript("SimpleProviders", "scripts/utility/deployment/SimpleProviders.ts");
+    await executeScript("SimpleProviders", "scripts/deployments/SimpleProviders.ts");
 }
 
 export async function deployBuilder() {
     process.env.LOCK_DEAL_NFT_ADDRESS = await getLockDealNFTAddress();
-    await executeScript("Simple Builder", "scripts/utility/deployment/Builder.ts");
+    await executeScript("Simple Builder", "scripts/deployments/Builder.ts");
 }
 
 export async function deployAllContracts() {
     process.env.BASEURI = await getBaseURI();
-    await executeScript("AllContracts", "scripts/deploy.ts");
+    await executeScript("AllContracts", "scripts/deployments/deploy.ts");
 }
 
 export async function deployWithoutDispenser() {
     process.env.BASEURI = await getBaseURI();
-    await executeScript("deploy core contracts without Dispenser", "scripts/withoutDispenser.ts");
+    await executeScript("deploy core contracts without Dispenser", "scripts/deployments/withoutDispenser.ts");
 }
 
 export async function deployDispenser() {
     process.env.LOCK_DEAL_NFT_ADDRESS = await getLockDealNFTAddress();
-    await executeScript("deploy DispenserProvider", "scripts/utility/deployment/DispenserProvider.ts");
+    await executeScript("deploy DispenserProvider", "scripts/deployments/DispenserProvider.ts");
 }
 
 export async function upgrade() {
     process.env.LOCK_DEAL_NFT_ADDRESS = await getLockDealNFTAddress();
-    await executeScript("update contracts from 1.3 to 1.4", "scripts/utility/deployment/upgrade.ts");
+    await executeScript("update contracts from 1.3 to 1.4", "scripts/deployments/upgrade.ts");
 }
 
 export async function deployInvestProvider() {
     process.env.DISPENSER_PROVIDER_ADDRESS = await getDispenserProviderAddress();
-    await executeScript("InvestProvider", "scripts/utility/deployment/InvestProvider.ts");
+    await executeScript("InvestProvider", "scripts/deployments/InvestProvider.ts");
 }
