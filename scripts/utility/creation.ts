@@ -1,27 +1,20 @@
-import {
-    DealProvider,
-    LockDealProvider,
-    TimedDealProvider,
-    RefundProvider,
-    VaultManager,
-    ERC20Token,
-} from "../../typechain-types"
-import { Wallet, BigNumber } from "ethers"
+import { DealProvider, LockDealProvider, TimedDealProvider, VaultManager, ERC20Token } from "../../typechain-types"
+import { gasLimit, gasPrice, amount } from "./constants"
+import { Wallet } from "ethers"
 import { ethers } from "hardhat"
-import { gasLimit, gasPrice, startTime, finishTime, amount } from "./constants"
 
 async function createSimpleNFT(
     user: Wallet,
     provider: DealProvider | LockDealProvider | TimedDealProvider,
     vaultManager: VaultManager,
     token: ERC20Token,
-    poolParams: BigNumber[]
+    poolParams: bigint[]
 ) {
-    const userAddress: string = await user.address
-    const tokenSignature = await getSignature(user, vaultManager, token, token.address)
+    const userAddress: string = await user.getAddress()
+    const tokenSignature = await getSignature(user, vaultManager, token, await token.getAddress())
     const tx = await provider
         .connect(user)
-        .createNewPool([userAddress, token.address], [...poolParams], tokenSignature, {
+        .createNewPool([userAddress, await token.getAddress()], [...poolParams], tokenSignature, {
             gasLimit,
             gasPrice,
         })
@@ -30,40 +23,19 @@ async function createSimpleNFT(
     console.log(name + ` NFT created`)
 }
 
-async function createRefundNFT(
-    user: Wallet,
-    refundProvider: RefundProvider,
-    provider: DealProvider | LockDealProvider | TimedDealProvider,
-    vaultManager: VaultManager,
-    token: ERC20Token,
-    mainCoin: ERC20Token
-) {
-    const name = await refundProvider.name()
-    const tokenSignature = await getSignature(user, vaultManager, token, token.address)
-    const mainCoinsignature = await getSignature(user, vaultManager, token, mainCoin.address)
-    const addresses = [user.address, token.address, mainCoin.address, provider.address]
-    const params = [amount, startTime, finishTime, amount, finishTime]
-    const tx = await refundProvider
-        .connect(user)
-        .createNewRefundPool(addresses, params, tokenSignature, mainCoinsignature, { gasLimit, gasPrice })
-    await tx.wait()
-    console.log(name + ` NFT created`)
-}
-
 async function getSignature(
     user: Wallet,
     vaultManager: VaultManager,
     token: ERC20Token,
-    tokenAddress: string = token.address,
-    tokenAmount: BigNumber = amount
+    tokenAddress: string,
+    tokenAmount: bigint = amount
 ) {
-    const dataToCheck = ethers.utils.solidityPack(["address", "uint256"], [tokenAddress, tokenAmount])
-    const currentNonce = await vaultManager.nonces(user.address)
-    const hash = ethers.utils.solidityKeccak256(
-        ["bytes", "uint"],
-        [dataToCheck, tokenAddress == token.address ? currentNonce : currentNonce.add(1)]
+    const currentNonce = await vaultManager.nonces(await user.getAddress())
+    const packedData = ethers.solidityPackedKeccak256(
+        ["address", "uint256", "uint256"],
+        [await token.getAddress(), tokenAmount, (await token.getAddress()) ? currentNonce : currentNonce + 1n]
     )
-    return await user.signMessage(ethers.utils.arrayify(hash))
+    return await user.signMessage(ethers.getBytes(packedData))
 }
 
-export { createSimpleNFT, createRefundNFT, getSignature }
+export { createSimpleNFT, getSignature }

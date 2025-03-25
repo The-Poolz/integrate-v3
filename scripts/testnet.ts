@@ -1,39 +1,26 @@
-import { Wallet } from "ethers"
 import {
     VaultManager,
     LockDealNFT,
     DealProvider,
     LockDealProvider,
     TimedDealProvider,
-    CollateralProvider,
-    RefundProvider,
     SimpleBuilder,
-    SimpleRefundBuilder,
     ERC20Token,
 } from "../typechain-types"
-import { deployFrom } from "./utility/deployment"
-import { setTrustee, approveContracts, createNewVault, approveToken } from "./utility/manageable"
-import { createSimpleNFT, createRefundNFT } from "./utility/creation"
-import {
-    amount,
-    startTime,
-    finishTime,
-    password,
-    provider,
-    v1DelayVaultTestnet
-} from "./utility/constants"
+import { createMassSimplePools } from "./utility/builders"
+import { amount, startTime, finishTime, password, provider } from "./utility/constants"
 import { _withdrawPools, _splitPools } from "./utility/control"
-import { createMassSimplePools, createMassRefundPools } from "./utility/builders"
+import { createSimpleNFT } from "./utility/creation"
+import { deployFrom } from "./utility/deployment"
+import { setTrustee, setApprovedContracts, createNewVault, approveToken } from "./utility/manageable"
+import { Wallet } from "ethers"
 
 let vaultManager: VaultManager,
     lockDealNFT: LockDealNFT,
     dealProvider: DealProvider,
     lockProvider: LockDealProvider,
     timedProvider: TimedDealProvider,
-    collateralProvider: CollateralProvider,
-    refundProvider: RefundProvider,
     simpleBuilder: SimpleBuilder,
-    simpleRefundBuilder: SimpleRefundBuilder,
     token: ERC20Token,
     mainCoin: ERC20Token
 
@@ -45,8 +32,7 @@ async function main() {
         const ids = await createPools(user)
         await splitPools(user, ids)
         await withdrawPools(user, ids)
-        await createMassSimplePools(user, simpleBuilder, vaultManager, dealProvider.address, token)
-        await createMassRefundPools(user, simpleRefundBuilder, vaultManager, dealProvider.address, token, mainCoin)
+        await createMassSimplePools(user, simpleBuilder, vaultManager, await dealProvider.getAddress(), token)
     } catch (error) {
         console.error("Error in main:", error)
     }
@@ -54,39 +40,37 @@ async function main() {
 
 async function deploy(user: Wallet) {
     vaultManager = await deployFrom("VaultManager", user)
-    lockDealNFT = await deployFrom("LockDealNFT", user, vaultManager.address, "")
-    dealProvider = await deployFrom("DealProvider", user, lockDealNFT.address)
-    lockProvider = await deployFrom("LockDealProvider", user, lockDealNFT.address, dealProvider.address)
-    timedProvider = await deployFrom("TimedDealProvider", user, lockDealNFT.address, lockProvider.address)
-    collateralProvider = await deployFrom("CollateralProvider", user, lockDealNFT.address, dealProvider.address)
-    refundProvider = await deployFrom("RefundProvider", user, lockDealNFT.address, collateralProvider.address)
-    simpleBuilder = await deployFrom("SimpleBuilder", user, lockDealNFT.address)
-    simpleRefundBuilder = await deployFrom(
-        "SimpleRefundBuilder",
+    lockDealNFT = await deployFrom("LockDealNFT", user, await vaultManager.getAddress(), "")
+    dealProvider = await deployFrom("DealProvider", user, await lockDealNFT.getAddress())
+    lockProvider = await deployFrom(
+        "LockDealProvider",
         user,
-        lockDealNFT.address,
-        refundProvider.address,
-        collateralProvider.address
+        await lockDealNFT.getAddress(),
+        await dealProvider.getAddress()
     )
+    timedProvider = await deployFrom(
+        "TimedDealProvider",
+        user,
+        await lockDealNFT.getAddress(),
+        await lockProvider.getAddress()
+    )
+    simpleBuilder = await deployFrom("SimpleBuilder", user, await lockDealNFT.getAddress())
     token = await deployFrom("ERC20Token", user, "Test Token", "TT")
     mainCoin = await deployFrom("ERC20Token", user, "USDT", "TT")
 }
 
 async function setup(user: Wallet) {
-    await setTrustee(vaultManager, user, lockDealNFT.address)
-    await approveContracts(user, lockDealNFT, [
-        dealProvider,
-        lockProvider,
-        timedProvider,
-        collateralProvider,
-        refundProvider,
-        simpleBuilder,
-        simpleRefundBuilder
+    await setTrustee(vaultManager, user, await lockDealNFT.getAddress())
+    await setApprovedContracts(lockDealNFT, [
+        await dealProvider.getAddress(),
+        await lockProvider.getAddress(),
+        await timedProvider.getAddress(),
+        await simpleBuilder.getAddress(),
     ])
     await createNewVault(vaultManager, user, token)
     await createNewVault(vaultManager, user, mainCoin)
-    await approveToken(token, user, vaultManager.address)
-    await approveToken(mainCoin, user, vaultManager.address)
+    await approveToken(token, user, await vaultManager.getAddress())
+    await approveToken(mainCoin, user, await vaultManager.getAddress())
     console.log("Setup done")
 }
 
@@ -95,7 +79,6 @@ async function createPools(user: Wallet): Promise<number[]> {
     await createSimpleNFT(user, dealProvider, vaultManager, token, [amount])
     await createSimpleNFT(user, lockProvider, vaultManager, token, [amount, startTime])
     await createSimpleNFT(user, timedProvider, vaultManager, token, [amount, startTime, finishTime])
-    await createRefundNFT(user, refundProvider, timedProvider, vaultManager, token, mainCoin)
     // IDs are always [id, id + 1...] every time the script is run
     return [id, id + 1, id + 2, id + 3]
 }

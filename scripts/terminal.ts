@@ -1,47 +1,54 @@
+import { askYesNoQuestion, openAndSubmitGitHubIssue } from "./deployments/issues"
 import {
     deployVaultAndLockDealNFT,
     deploySimpleProviders,
-    deployRefundProvider,
-    deployRefundAndCollateral,
-    deployBuilders,
+    deployBuilder,
     deployAllContracts,
-    deployLightMigrator,
-    deployDelayProviderAndMigrator,
-    deployWithoutRefund,
-} from "./utility/deployment/execute"
+    deployWithoutDispenser,
+    deployDispenser,
+    deployInvestProvider,
+    upgrade,
+} from "./utility/execute"
+import { getMenu } from "./utility/input"
 import { ethers } from "ethers"
-import { getMenu } from "./utility/deployment/input"
-import { askYesNoQuestion, openAndSubmitGitHubIssue } from "./utility/deployment/issues"
 
 // Define deployment scripts
 const scriptPaths = [
-    "withoutRefund.ts",
-    "VaultAndLockDealNFT.ts",
+    "DispenserProvider.ts",
+    "InvestProvider.ts",
+    "SimpleBuilder.ts",
     "SimpleProviders.ts",
-    "RefundProvider.ts",
-    "RefundAndCollateral.ts",
-    "Builders.ts",
-    "LightMigrator.ts",
-    "DelayVaultProvider.ts",
+    "VaultAndLockDealNFT.ts",
+    "withoutDispenser.ts",
 ]
 
 // Create menu items from script paths
 const menuItems = [
-    { name: "Deploy All contracts" },
-    ...scriptPaths.map((script) => ({ name: `Deploy ${script.replace(".ts", "")}` })),
+    { name: "Deploy All contracts", action: deployAllContracts },
+    { name: "Upgrade from v1.3 to v1.4", action: upgrade },
+    ...scriptPaths.map((script, index) => ({
+        name: `Deploy ${script.replace(".ts", "")}`,
+        action: [
+            deployDispenser,
+            deployBuilder,
+            deploySimpleProviders,
+            deployVaultAndLockDealNFT,
+            deployWithoutDispenser,
+            deployInvestProvider,
+        ][index], // Map functions dynamically
+    })),
+    { name: "Exit", action: () => console.log("Exiting...") },
 ]
 
 // Map menu item names to deployment functions for cleaner handling
 const deploymentActions: { [key: string]: () => Promise<any> } = {
     "Deploy All contracts": deployAllContracts,
-    "Deploy withoutRefund": deployWithoutRefund,
+    "Deploy DispenserProvider": deployDispenser,
+    "Deploy InvestProvider": deployInvestProvider,
+    "Deploy withoutDispenser": deployWithoutDispenser,
     "Deploy VaultAndLockDealNFT": deployVaultAndLockDealNFT,
     "Deploy SimpleProviders": deploySimpleProviders,
-    "Deploy RefundProvider": deployRefundProvider,
-    "Deploy RefundAndCollateral": deployRefundAndCollateral,
-    "Deploy Builders": deployBuilders,
-    "Deploy LightMigrator": deployLightMigrator,
-    "Deploy DelayVaultProvider": deployDelayProviderAndMigrator,
+    "Deploy SimpleBuilder": deployBuilder,
 }
 
 async function displayMenu() {
@@ -50,7 +57,8 @@ async function displayMenu() {
         try {
             // Display the main menu to choose deployment options
             const answer = await getMenu(menuItems)
-
+            console.log(`Selected: ${answer}`)
+            console.log("deploymentActions[answer]:", deploymentActions[answer])
             if (deploymentActions[answer]) {
                 // Capture the deployment addresses
                 const deploymentData = await deploymentActions[answer]()
@@ -59,7 +67,7 @@ async function displayMenu() {
                 const openIssue = await askYesNoQuestion("Do you want to open an issue with deployment data?")
 
                 if (openIssue) {
-                    const provider = new ethers.providers.JsonRpcProvider("http://localhost:24012/rpc")
+                    const provider = new ethers.JsonRpcProvider("http://localhost:24012/rpc")
                     const network = await provider.getNetwork()
                     // Prepare the issue body with the deployment data
                     const issueBody = `This issue is created by the deployment script.\nThe following contracts were deployed successfully:\n\n${deploymentData
@@ -72,8 +80,8 @@ async function displayMenu() {
                     console.log("Issue creation skipped.")
                 }
             } else {
-                console.log("Exiting the menu. Thank you!")
-                keepMenuOpen = false
+                //console.log("Exiting the menu. Thank you!")
+                //keepMenuOpen = false
             }
         } catch (error) {
             console.error(`Error executing command: ${error}`)
