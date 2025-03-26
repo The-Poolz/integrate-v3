@@ -45,3 +45,26 @@ export async function askYesNoQuestion(question: string): Promise<boolean> {
         ],
     })
 }
+
+interface RPCNetwork {
+    chainId: number
+    name: string
+    rpc: { url: string }[] // An array of objects with a 'url' property for RPC URLs
+    explorers: { url: string }[] // An array of objects with a 'url' property for explorers
+    nativeCurrency: {
+        name: string
+        symbol: string
+        decimals: number
+    }
+    faucets: string[] // An array of faucet URLs
+}
+
+export async function getDataByChainId(chainId: number): Promise<RPCNetwork | undefined> {
+    try {
+        const response = await axios.get<RPCNetwork[]>("https://chainlist.org/rpcs.json")
+        return response.data.find((network) => network.chainId === chainId)
+    } catch (error) {
+        console.error("Error fetching RPCs:", error)
+        return undefined
+    }
+}

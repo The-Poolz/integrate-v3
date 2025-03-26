@@ -1,4 +1,3 @@
-import { askYesNoQuestion, openAndSubmitGitHubIssue } from "./deployments/issues"
 import {
     deployVaultAndLockDealNFT,
     deploySimpleProviders,
@@ -10,6 +9,7 @@ import {
     upgrade,
 } from "./utility/execute"
 import { getMenu } from "./utility/input"
+import { askYesNoQuestion, openAndSubmitGitHubIssue, getDataByChainId } from "./utility/issues"
 import { ethers } from "ethers"
 
 // Define deployment scripts
@@ -50,38 +50,38 @@ const deploymentActions: { [key: string]: () => Promise<any> } = {
     "Deploy SimpleProviders": deploySimpleProviders,
     "Deploy SimpleBuilder": deployBuilder,
 }
-
 async function displayMenu() {
     let keepMenuOpen = true
     while (keepMenuOpen) {
         try {
-            // Display the main menu to choose deployment options
             const answer = await getMenu(menuItems)
-            console.log(`Selected: ${answer}`)
-            console.log("deploymentActions[answer]:", deploymentActions[answer])
             if (deploymentActions[answer]) {
-                // Capture the deployment addresses
                 const deploymentData = await deploymentActions[answer]()
-
-                // Ask if the user wants to create an issue with deployment data
                 const openIssue = await askYesNoQuestion("Do you want to open an issue with deployment data?")
-
                 if (openIssue) {
                     const provider = new ethers.JsonRpcProvider("http://localhost:24012/rpc")
                     const network = await provider.getNetwork()
-                    // Prepare the issue body with the deployment data
-                    const issueBody = `This issue is created by the deployment script.\nThe following contracts were deployed successfully:\n\n${deploymentData
+                    const data = await getDataByChainId(Number(network.chainId))
+
+                    // Prepare the issue body with deployment data and RPCs
+                    const issueBody = `\nThe following contracts were deployed successfully:\n\n${deploymentData
                         .map((address: string) => `- ${address}`)
-                        .join("\n")}\nchain: ${network.name}\nchainId: ${network.chainId}`
-                    console.log("Issue body:", issueBody)
-                    await openAndSubmitGitHubIssue("test issue", issueBody)
+                        .join("\n")}\n
+                        chain: ${data?.name}\n
+                        chainId: ${network.chainId}\n
+                        RPC: ${data?.rpc[0]?.url}\n
+                        Explorer: ${data?.explorers.map((explorer: any) => explorer.url).join(", ")}\n
+                        Native Currency: ${data?.nativeCurrency.name} (${data?.nativeCurrency.symbol})\n
+                        Faucets: ${data?.faucets.join(", ")}`
+
+                    await openAndSubmitGitHubIssue(answer + " to " + data?.name + data?.name, issueBody)
                     console.log("Issue created successfully.")
                 } else {
                     console.log("Issue creation skipped.")
                 }
             } else {
-                //console.log("Exiting the menu. Thank you!")
-                //keepMenuOpen = false
+                console.log("Exiting the menu. Thank you!")
+                keepMenuOpen = false
             }
         } catch (error) {
             console.error(`Error executing command: ${error}`)

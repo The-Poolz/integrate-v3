@@ -6,13 +6,22 @@ async function executeScript(scriptName: string, scriptPath: string): Promise<st
     const command = `npx hardhat run ${scriptPath} --network ${network}`
 
     try {
-        const stdout = await execSync(command, { stdio: "inherit" }).toString()
-        console.log(`Command executed successfully: Deploy ${scriptName}`)
+        const stdout = execSync(command, { stdio: "pipe" }).toString()
+        if (!stdout) {
+            throw new Error("No output from command")
+        }
 
-        // Split the output by lines and skip the first three lines
-        return stdout.split("\n").slice(3)
-    } catch (error) {
+        console.log(`Command executed successfully: Deploy ${scriptName}`)
+        console.log(stdout)
+        // Split the output by lines and skip the first four lines
+        return filterEvenLengthStrings(stdout.split("\n").slice(4))
+    } catch (error: any) {
+        // Cast error to any
         console.error(`Error executing script ${scriptName}:`, error)
+        // Capture stderr if available
+        if (error.stderr) {
+            console.error("Error Output:", error.stderr.toString())
+        }
         return []
     }
 }
@@ -55,4 +64,8 @@ export async function upgrade(): Promise<string[]> {
 export async function deployInvestProvider(): Promise<string[]> {
     process.env.DISPENSER_PROVIDER_ADDRESS = await getDispenserProviderAddress()
     return await executeScript("InvestProvider", "scripts/deployments/InvestProvider.ts")
+}
+
+function filterEvenLengthStrings(arr: string[]): string[] {
+    return arr.filter((str) => str.length % 2 === 0)
 }

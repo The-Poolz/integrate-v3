@@ -1,11 +1,11 @@
-import "@nomicfoundation/hardhat-chai-matchers"
-import "@nomicfoundation/hardhat-network-helpers"
 import "@truffle/dashboard-hardhat-plugin"
-import "@typechain/hardhat"
-import "hardhat-dependency-compiler"
 import "hardhat-gas-reporter"
 import { HardhatUserConfig } from "hardhat/config"
 import "solidity-coverage"
+import "hardhat-dependency-compiler"
+import '@typechain/hardhat';
+import '@nomicfoundation/hardhat-network-helpers';
+import '@nomicfoundation/hardhat-chai-matchers';
 
 const config: HardhatUserConfig = {
     defaultNetwork: "hardhat",
@@ -70,31 +70,30 @@ const config: HardhatUserConfig = {
     gasReporter: {
         enabled: true,
         showMethodSig: true,
-        currency: "USD",
-        token: "ETH",
-        gasPriceApi:
-            "https://api.etherscan.io/api?module=proxy&action=eth_gasPrice&apikey=" + process.env.ETHERSCAN_API_KEY,
-        coinmarketcap: process.env.CMC_API_KEY || "",
+        currency: 'USD',
+        token: 'ETH',
+        gasPriceApi: 'https://api.etherscan.io/api?module=proxy&action=eth_gasPrice&apikey=' + process.env.ETHERSCAN_API_KEY,
+        coinmarketcap: process.env.CMC_API_KEY || '',
         noColors: true,
         reportFormat: "markdown",
         outputFile: "gasReport.md",
         forceTerminalOutput: true,
         L1: "ethereum",
-        forceTerminalOutputFormat: "terminal",
+        forceTerminalOutputFormat: "terminal"
     },
     dependencyCompiler: {
         paths: [
-            "@poolzfinance/lockdeal-nft/contracts/LockDealNFT/LockDealNFT.sol",
-            "@poolzfinance/lockdeal-nft/contracts/SimpleProviders/DealProvider/DealProvider.sol",
-            "@poolzfinance/lockdeal-nft/contracts/SimpleProviders/LockProvider/LockDealProvider.sol",
-            "@poolzfinance/lockdeal-nft/contracts/SimpleProviders/TimedDealProvider/TimedDealProvider.sol",
-            "@poolzfinance/builders/contracts/SimpleBuilder/SimpleBuilder.sol",
-            "@poolzfinance/vault-manager/contracts/VaultManager/VaultManager.sol",
-            "@poolzfinance/vault-manager/contracts/test/ERC20Token.sol",
-            "@poolzfinance/dispenser-provider/contracts/DispenserProvider.sol",
-            "@poolzfinance/invest-provider/contracts/InvestProvider.sol",
+          '@poolzfinance/lockdeal-nft/contracts/LockDealNFT/LockDealNFT.sol',
+          '@poolzfinance/lockdeal-nft/contracts/SimpleProviders/DealProvider/DealProvider.sol',
+          '@poolzfinance/lockdeal-nft/contracts/SimpleProviders/LockProvider/LockDealProvider.sol',
+          '@poolzfinance/lockdeal-nft/contracts/SimpleProviders/TimedDealProvider/TimedDealProvider.sol',
+          '@poolzfinance/builders/contracts/SimpleBuilder/SimpleBuilder.sol',
+          '@poolzfinance/vault-manager/contracts/VaultManager/VaultManager.sol',
+          '@poolzfinance/vault-manager/contracts/test/ERC20Token.sol',
+          '@poolzfinance/dispenser-provider/contracts/DispenserProvider.sol',
+          '@poolzfinance/invest-provider/contracts/InvestProvider.sol',
         ],
-    },
+      }
 }
 
 export default config
