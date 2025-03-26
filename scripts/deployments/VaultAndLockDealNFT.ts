@@ -9,9 +9,7 @@ async function deployNFTandVaultManager(baseURI: string = "") {
     // Set trustee
     let tx = await vaultManager.setTrustee(await lockDealNFT.getAddress())
     await tx.wait()
-    console.log("LockDealNFT and VaultManager deployed successfully")
-    console.log("LockDealNFT address: ", await lockDealNFT.getAddress())
-    console.log("VaultManager address: ", await vaultManager.getAddress())
+    console.log("VaultManager set trustee to LockDealNFT")
 }
 
 // Retrieve environment variable

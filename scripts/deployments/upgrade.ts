@@ -1,6 +1,6 @@
 import { DispenserProvider, LockDealNFT, LockDealProvider, TimedDealProvider } from "../../typechain-types"
-import { setApprovedContracts } from "../utility/manageable"
 import { deploy } from "../utility/deployment"
+import { setApprovedContracts } from "../utility/manageable"
 import { ethers } from "hardhat"
 
 async function upgrade(lockDealNFTAddress: string = "") {
