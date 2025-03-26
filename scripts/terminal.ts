@@ -64,17 +64,19 @@ async function displayMenu() {
                     const data = await getDataByChainId(Number(network.chainId))
 
                     // Prepare the issue body with deployment data and RPCs
-                    const issueBody = `\nThe following contracts were deployed successfully:\n\n${deploymentData
+                    const issueBody = `**Chain:** ${data?.name}\n**ChainId:** ${network.chainId}\n**RPC:** ${
+                        data?.rpc[0]?.url
+                    }\n**Explorer:** ${data?.explorers
+                        .map((explorer: any) => explorer.url)
+                        .join(", ")}\nNative Currency: ${data?.nativeCurrency.name} (${
+                        data?.nativeCurrency.symbol
+                    })\nFaucets: ${data?.faucets.join(
+                        ", "
+                    )}\n\nThe following contracts were deployed successfully:\n\n${deploymentData
                         .map((address: string) => `- ${address}`)
-                        .join("\n")}\n
-                        chain: ${data?.name}\n
-                        chainId: ${network.chainId}\n
-                        RPC: ${data?.rpc[0]?.url}\n
-                        Explorer: ${data?.explorers.map((explorer: any) => explorer.url).join(", ")}\n
-                        Native Currency: ${data?.nativeCurrency.name} (${data?.nativeCurrency.symbol})\n
-                        Faucets: ${data?.faucets.join(", ")}`
-
-                    await openAndSubmitGitHubIssue(answer + " to " + data?.name + data?.name, issueBody)
+                        .join("\n")}
+                        `
+                    await openAndSubmitGitHubIssue(answer + " to " + data?.name, issueBody)
                     console.log("Issue created successfully.")
                 } else {
                     console.log("Issue creation skipped.")
